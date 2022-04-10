@@ -1,0 +1,19 @@
+spring:
+    datasource: # database settings
+        url: jdbc:h2:tcp://localhost/~/documents/jpashop
+        # MVCC=TRUE는 다중접근시 빠르게 처리하도록 설정, 그러나 신버전의 h2에서는 해당 옵션을 삭제하여 없음
+        username: aivyss
+        password:
+        driver-class-name: org.h2.Driver
+        
+    jpa: # jpa settings
+        hibernate:
+            ddl-auto: create # application 구동시 ddl을 실행하는 방법에 대한 기술
+        properties:
+            hibernate:
+                show_sql: true # 실제 실행되는 sql을 terminal에 표시하기 위해서 사용 (sout으로 찍어서 운영환경에서 사용하지 않음)
+                format_sql: true # sql 포매팅을 실시해서 보여줌
+                
+    logging: # logging settings
+        level:
+            org.hibernate.SQL: debug # sql을 로거를 이용해서 찍음, 찍을 로그레벨의 설정
