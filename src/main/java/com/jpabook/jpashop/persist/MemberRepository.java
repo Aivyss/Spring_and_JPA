@@ -1,6 +1,6 @@
 package com.jpabook.jpashop.persist;
 
-import com.jpabook.jpashop.entity.Member;
+import com.jpabook.jpashop.domain.member.Member;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import org.springframework.stereotype.Repository;
@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 public class MemberRepository {
-	@PersistenceContext // 스프링이 팩토리로부터 자동으로 entity manger를 주입해준다.
+	@PersistenceContext // 스프링이 팩토리로부터 자동으로 entity manger를 주입해준다. (org.springframework.boot:spring-boot-starter-web)
 	private EntityManager em;
 	
 	@Transactional

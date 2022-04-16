@@ -1,13 +1,19 @@
-package com.jpabook.jpashop.entity;
+package com.jpabook.jpashop.domain.member;
 
-import static com.jpabook.jpashop.entity.sequence.SequenceGenerators.MEM_SEQ_GEN;
-import static com.jpabook.jpashop.entity.sequence.Sequences.MEM_SEQ;
+import static com.jpabook.jpashop.domain.sequence.SequenceGenerators.MEM_SEQ_GEN;
+import static com.jpabook.jpashop.domain.sequence.Sequences.MEM_SEQ;
 
+import com.jpabook.jpashop.domain.order.Order;
+import java.util.ArrayList;
+import java.util.List;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import lombok.Getter;
 import lombok.Setter;
@@ -27,4 +33,11 @@ public class Member {
 	
 	@Column(name = "NAME")
 	private String name;
+	
+	@Embedded
+	private Address address;
+	
+	@OneToMany(mappedBy = "member") // 호스트 클래스의 필드변수명
+	private List<Order> orders = new ArrayList<>();
+	
 }

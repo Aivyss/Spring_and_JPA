@@ -2,8 +2,7 @@ package com.jpabook.jpashop.persist;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.jpabook.jpashop.entity.Member;
-import com.jpabook.jpashop.persist.MemberRepository;
+import com.jpabook.jpashop.domain.member.Member;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,8 +21,8 @@ class MemberRepositoryTest {
 	@Test
 	@DisplayName("멤버 정보 저장 테스트")
 	@Transactional
-	@Rollback(true)
-	public void saveTest() throws Exception {
+	@Rollback(false)
+	public void testSaveAndFind() throws Exception {
 	    // * given
 		String memberName = "memberA";
 		Member member = new Member();
@@ -38,6 +37,6 @@ class MemberRepositoryTest {
 		assertThat(member).isEqualTo(findMember);
 		assertThat(member).isSameAs(findMember);
 		assertThat(member.getId()).isEqualTo(id);
-		assertThat(member.getName()).isEqualTo("dndndndn");
+		assertThat(member.getName()).isEqualTo(memberName);
 	}
 }
