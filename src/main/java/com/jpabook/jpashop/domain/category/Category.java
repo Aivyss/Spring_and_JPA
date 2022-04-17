@@ -22,13 +22,12 @@ import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 
 @Entity
 @Getter
 @Setter
-@ToString
 @SequenceGenerator(name = CATEG_SEQ_GEN, sequenceName = CATEG_SEQ, initialValue = 1, allocationSize = 50)
+@SuppressWarnings({"JpaDataSourceORMInspection", "DefaultAnnotationParam", "unused"})
 public class  Category {
 	
 	@Id

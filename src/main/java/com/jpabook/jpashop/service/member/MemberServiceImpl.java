@@ -40,7 +40,7 @@ public class MemberServiceImpl implements MemberService {
 	 *      <li> 중복 회원 방지 로직 </li>
 	 *  </ul>
 	 *
-	 * @param member
+	 * @param member member instance for signup
 	 * @return member primary key
 	 */
 	@Override

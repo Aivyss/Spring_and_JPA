@@ -16,20 +16,11 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
-import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.SequenceGenerator;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 
-@Entity
-@Setter
-@Getter
-@ToString
-@SequenceGenerator(name = ITEM_SEQ_GEN, sequenceName = ITEM_SEQ, initialValue = 1, allocationSize = 50)
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name = "D_TYPE") // 모든 테이블에 넣으려면 구분자 타입컬럼이 필요하므로 그것을 설정
 /**
  * <h1> 테이블 전략을 하나의 테이블에 다 집어넣는 것으로 선택하였음 </h1>
  * <ul>
@@ -38,6 +29,13 @@ import lombok.ToString;
  *     <li> JOINED: 조인관계를 이용해 공통부분을 조인해서 쓰도록 함 </li>
  * </ul>
  */
+@Entity
+@Setter
+@Getter
+@SequenceGenerator(name = ITEM_SEQ_GEN, sequenceName = ITEM_SEQ, initialValue = 1, allocationSize = 50)
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "D_TYPE") // 모든 테이블에 넣으려면 구분자 타입컬럼이 필요하므로 그것을 설정
+@SuppressWarnings({"JpaDataSourceORMInspection", "DefaultAnnotationParam", "unused"})
 public abstract class Item {
 	
 	@Id

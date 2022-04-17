@@ -19,6 +19,7 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
+@SuppressWarnings("RedundantThrows")
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
 class MemberRepositoryTest {
@@ -63,7 +64,7 @@ class MemberRepositoryTest {
 	@DisplayName("전체 유저 조회")
 	public void testFindAll() throws Exception {
 	    // * given
-		List<Member> inputList = new ArrayList<>();
+		final List<Member> inputList = new ArrayList<>();
 		for (int i = 0; i < 5; i += 1) {
 			Member member = new Member(
 				null,
@@ -72,6 +73,7 @@ class MemberRepositoryTest {
 				new Address("city", "street", "10-1010"),
 				new Edits(LocalDateTime.now(), DeletedFlag.N,  null)
 			);
+			inputList.add(member);
 			memberRepository.save(member);
 		}
 	    
@@ -79,9 +81,9 @@ class MemberRepositoryTest {
 		final List<Member> allMembers = memberRepository.findAll();
 		
 		// * then
-		final List<Long> actualIdList = allMembers.stream().map(member -> member.getId())
+		final List<Long> actualIdList = allMembers.stream().map(Member::getId)
 			.collect(Collectors.toList());
-		final List<Long> expectedIdList = inputList.stream().map(member -> member.getId())
+		final List<Long> expectedIdList = inputList.stream().map(Member::getId)
 			.collect(Collectors.toList());
 		
 		for (Long expectedId : expectedIdList) {

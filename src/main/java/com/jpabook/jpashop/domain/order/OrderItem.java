@@ -8,8 +8,6 @@ import com.jpabook.jpashop.domain.item.Item;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -19,11 +17,11 @@ import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 
 @Entity
-@Getter @Setter @ToString
+@Getter @Setter
 @SequenceGenerator(name = ORDER_ITEM_SEQ_GEN, sequenceName = ORDER_ITEM_SEQ, initialValue = 1, allocationSize = 50)
+@SuppressWarnings({"JpaDataSourceORMInspection", "DefaultAnnotationParam", "unused", "FieldMayBeFinal"})
 public class OrderItem {
 	@Id
 	@GeneratedValue(generator = ORDER_ITEM_SEQ_GEN, strategy = GenerationType.SEQUENCE)

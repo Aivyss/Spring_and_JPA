@@ -20,13 +20,12 @@ import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 
 @Entity
 @Getter
 @Setter
-@ToString
 @SequenceGenerator(name = DELIVERY_SEQ_GEN, sequenceName = DELIVERY_SEQ, initialValue = 1, allocationSize = 50)
+@SuppressWarnings({"JpaDataSourceORMInspection", "DefaultAnnotationParam", "unused"})
 public class Delivery {
 	
 	@Id

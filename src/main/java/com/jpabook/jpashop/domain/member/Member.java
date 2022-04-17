@@ -17,13 +17,11 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
 
 @Entity
 @Getter
-@ToString
 @SequenceGenerator(name = MEM_SEQ_GEN, sequenceName = MEM_SEQ, initialValue = 1, allocationSize = 100)
+@SuppressWarnings({"JpaDataSourceORMInspection", "DefaultAnnotationParam", "unused", "FieldMayBeFinal"})
 public class Member {
 	
 	@Id

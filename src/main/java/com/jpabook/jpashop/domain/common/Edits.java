@@ -8,7 +8,6 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import lombok.Getter;
-import lombok.ToString;
 
 /**
  * <ul>
@@ -20,7 +19,8 @@ import lombok.ToString;
  */
 @Embeddable
 @Getter
-@ToString
+@SuppressWarnings("JpaDataSourceORMInspection")
+
 public class Edits {
 	
 	@Column(name = "INPUT_TIME")

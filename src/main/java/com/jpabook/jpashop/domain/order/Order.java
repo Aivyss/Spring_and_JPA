@@ -27,14 +27,13 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 
 @Getter
 @Setter
-@ToString
 @Entity
 @SequenceGenerator(name = ORDER_SEQ_GEN, sequenceName = ORDER_SEQ, initialValue = 1, allocationSize = 50)
 @Table(name = "ORDERS")
+@SuppressWarnings({"JpaDataSourceORMInspection", "DefaultAnnotationParam", "unused", "FieldMayBeFinal"})
 public class Order {
 	
 	@Id

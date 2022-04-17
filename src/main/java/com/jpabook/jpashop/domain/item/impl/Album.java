@@ -6,13 +6,12 @@ import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 
 @Entity
 @Getter
 @Setter
-@ToString
 @DiscriminatorValue("ALBUM")
+@SuppressWarnings("JpaDataSourceORMInspection")
 public class Album extends Item {
 	
 	@Column(name = "ARTIST")
