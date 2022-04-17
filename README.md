@@ -61,18 +61,16 @@ Side Project for Spring & JPA Study
 - List up orders
 - Cancel order
 
-# Application Specification
+# Application Architecture
+- Controller > Service > Repository > DB
+- Controller > Domain
+- Service > Domain
+- Repository > domain
 
-## Account Functions
-- Sign up a member
-- List up members
-
-## Item Functions
-- Persist item
-- Update item
-- List up items
-
-## Order Functions
-- Order
-- List up orders
-- Cancel order
+# Package Structure
+- com.jpabook.jpashoot
+  - domain
+  - exception
+  - persist
+  - service
+  - web
