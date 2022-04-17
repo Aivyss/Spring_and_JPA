@@ -2,6 +2,7 @@ package com.jpabook.jpashop.persist;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.jpabook.jpashop.domain.member.Address;
 import com.jpabook.jpashop.domain.member.Member;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -27,6 +28,7 @@ class MemberRepositoryTest {
 		String memberName = "memberA";
 		Member member = new Member();
 		member.setName(memberName);
+		member.setAddress(new Address("city", "street", "10-1010"));
 		
 		// * when
 		final Long id = memberRepository.save(member);
@@ -38,5 +40,7 @@ class MemberRepositoryTest {
 		assertThat(member).isSameAs(findMember);
 		assertThat(member.getId()).isEqualTo(id);
 		assertThat(member.getName()).isEqualTo(memberName);
+		assertThat(findMember.getId()).isEqualTo(id);
+		assertThat(findMember.getName()).isEqualTo(memberName);
 	}
 }

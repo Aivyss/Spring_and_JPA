@@ -17,7 +17,6 @@ public class MemberRepository {
 		
 		return member.getId(); // 커맨드와 쿼리를 분리? 사이드 이팩트 제거를 위해 return을 거의 없도록 설계한다함
 	}
-	
 	public Member find(Long id) {
 		return em.find(Member.class, id);
 	}

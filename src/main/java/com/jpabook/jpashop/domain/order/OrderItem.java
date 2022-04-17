@@ -8,6 +8,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -28,11 +29,11 @@ public class OrderItem {
 	private Long id;
 	
 	@JoinColumn(name = "ITEM_ID")
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	private Item item;
 	
 	@JoinColumn(name = "ORDER_ID")
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	private Order order;
 	
 	@Column(name = "ORDER_PRICE")

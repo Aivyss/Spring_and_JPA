@@ -9,10 +9,10 @@ import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import lombok.Getter;
@@ -35,9 +35,8 @@ public class Member {
 	private String name;
 	
 	@Embedded
-	private Address address;
+	private Address address = new Address();
 	
 	@OneToMany(mappedBy = "member") // 호스트 클래스의 필드변수명
 	private List<Order> orders = new ArrayList<>();
-	
 }
