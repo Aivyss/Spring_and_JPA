@@ -22,14 +22,13 @@ import org.springframework.transaction.annotation.Transactional;
 @SuppressWarnings("RedundantThrows")
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
+@Transactional
 class MemberRepositoryTest {
 	@Autowired
 	private MemberRepository memberRepository;
 	
 	@Test
-	@Transactional
-	@DisplayName("멤버 정보 저장 테스트")
-	@Rollback
+	@DisplayName("멤버 정보 저장 및 조회")
 	public void testSaveAndFind() throws Exception {
 	    // * given
 		String memberName = "memberA";
@@ -59,8 +58,6 @@ class MemberRepositoryTest {
 	}
 	
 	@Test
-	@Transactional
-	@Rollback
 	@DisplayName("전체 유저 조회")
 	public void testFindAll() throws Exception {
 	    // * given
@@ -92,9 +89,7 @@ class MemberRepositoryTest {
 	}
 	
 	@Test
-	@Transactional
-	@Rollback
-	@DisplayName("이름으로 조회 테스트")
+	@DisplayName("이름으로 조회")
 	public void testFindByName() throws Exception {
 	    // * given
 		String partial = "^^^^";
@@ -134,8 +129,6 @@ class MemberRepositoryTest {
 	}
 	
 	@Test
-	@Transactional
-	@Rollback
 	@DisplayName("닉네임으로 유니크 조회")
 	public void testFindByNickname() throws Exception {
 	    // * given

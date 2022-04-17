@@ -31,7 +31,7 @@ class MemberServiceImplTest {
 	private MemberServiceImpl memberService;
 	
 	@Test
-	@DisplayName("중복된 회원가입 테스트")
+	@DisplayName("중복된 회원 회원가입 케이스")
 	public void testSaveDuplicatedCase() throws Exception {
 	    // * given
 		String memberName = "memberA";
@@ -79,7 +79,7 @@ class MemberServiceImplTest {
 	}
 	
 	@Test
-	@DisplayName("단건 유저조회 테스트")
+	@DisplayName("단건 유저조회")
 	public void testFindOneMember() throws Exception {
 	    // * given
 	    Long memberId = 91234L;
@@ -96,6 +96,7 @@ class MemberServiceImplTest {
 	}
 	
 	@Test
+	@DisplayName("전체 유저조회")
 	public void testFindAllMembers() throws Exception {
 	    // * set stubs
 		List<Member> allMembers = mock(List.class);
