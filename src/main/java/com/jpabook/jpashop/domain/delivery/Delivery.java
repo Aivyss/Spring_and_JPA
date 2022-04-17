@@ -11,6 +11,7 @@ import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -41,6 +42,6 @@ public class Delivery {
 	private DeliveryStatus status;
 	
 	@JoinColumn(name = "ORDER_ID")
-	@OneToOne
+	@OneToOne(fetch = FetchType.LAZY)
 	private Order order;
 }

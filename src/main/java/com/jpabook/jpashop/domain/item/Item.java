@@ -54,4 +54,10 @@ public abstract class Item {
 	
 	@ManyToMany(mappedBy = "items")
 	List<Category> categories = new ArrayList<>();
+	
+	// * relation util methods
+	public void addCategory (Category category) {
+		this.categories.add(category);
+		category.getItems().add(this);
+	}
 }

@@ -8,6 +8,7 @@ import com.jpabook.jpashop.domain.member.Member;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -50,9 +51,20 @@ public class Order {
 	@ManyToOne(fetch = FetchType.LAZY)
 	private Member member;
 	
-	@OneToOne(mappedBy = "order")
+	@OneToOne(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private Delivery delivery;
 	
-	@OneToMany(mappedBy = "order")
+	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
 	private List<OrderItem> orderItems = new ArrayList<>();
+	
+	// * relation util methods
+	public void setMember(Member member) {
+		this.member = member;
+		member.getOrders().add(this);
+	}
+	
+	public void addOrderItem(OrderItem orderItem) {
+		orderItem.setOrder(this);
+		this.orderItems.add(orderItem);
+	}
 }

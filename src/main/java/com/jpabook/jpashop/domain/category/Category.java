@@ -51,4 +51,10 @@ public class  Category {
 	) // 다대다 관계는 두 관계를 이어주는 테이블을 정의해야만 연관관계를 맺을 수 있다.
 	@ManyToMany
 	List<Item> items = new ArrayList<>();
+	
+	// * relation util methods
+	public void addChildCategory(Category child) {
+		this.children.add(child);
+		child.setParent(this);
+	}
 }
