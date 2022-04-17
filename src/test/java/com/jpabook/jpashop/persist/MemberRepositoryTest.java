@@ -2,8 +2,11 @@ package com.jpabook.jpashop.persist;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.jpabook.jpashop.domain.member.Address;
+import com.jpabook.jpashop.domain.common.Address;
+import com.jpabook.jpashop.domain.common.DeletedFlag;
+import com.jpabook.jpashop.domain.common.Edits;
 import com.jpabook.jpashop.domain.member.Member;
+import java.time.LocalDateTime;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,6 +32,7 @@ class MemberRepositoryTest {
 		Member member = new Member();
 		member.setName(memberName);
 		member.setAddress(new Address("city", "street", "10-1010"));
+		member.setEdits(new Edits(LocalDateTime.now(), DeletedFlag.N,  null));
 		
 		// * when
 		final Long id = memberRepository.save(member);

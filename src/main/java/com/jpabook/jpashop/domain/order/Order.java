@@ -3,6 +3,7 @@ package com.jpabook.jpashop.domain.order;
 import static com.jpabook.jpashop.domain.sequence.SequenceGenerators.ORDER_SEQ_GEN;
 import static com.jpabook.jpashop.domain.sequence.Sequences.ORDER_SEQ;
 
+import com.jpabook.jpashop.domain.common.Edits;
 import com.jpabook.jpashop.domain.delivery.Delivery;
 import com.jpabook.jpashop.domain.member.Member;
 import java.time.LocalDateTime;
@@ -10,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -46,6 +48,9 @@ public class Order {
 	@Enumerated(EnumType.STRING)
 	@Column(name = "ORDER_STATUS")
 	private OrderStatus status;
+	
+	@Embedded
+	private Edits edits;
 	
 	@JoinColumn(name = "MEMBER_ID")
 	@ManyToOne(fetch = FetchType.LAZY)

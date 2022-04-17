@@ -1,4 +1,4 @@
-package com.jpabook.jpashop.domain.member;
+package com.jpabook.jpashop.domain.common;
 
 import javax.persistence.Embeddable;
 import lombok.Getter;

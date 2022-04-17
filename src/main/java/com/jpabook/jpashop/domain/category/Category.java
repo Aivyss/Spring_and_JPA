@@ -3,10 +3,12 @@ package com.jpabook.jpashop.domain.category;
 import static com.jpabook.jpashop.domain.sequence.SequenceGenerators.CATEG_SEQ_GEN;
 import static com.jpabook.jpashop.domain.sequence.Sequences.CATEG_SEQ;
 
+import com.jpabook.jpashop.domain.common.Edits;
 import com.jpabook.jpashop.domain.item.Item;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -36,6 +38,9 @@ public class  Category {
 	
 	@Column(name = "CATEGORY_NAME")
 	private String name;
+	
+	@Embedded
+	private Edits edits;
 	
 	@JoinColumn(name = "PARENT_ID")
 	@ManyToOne(fetch = FetchType.LAZY)

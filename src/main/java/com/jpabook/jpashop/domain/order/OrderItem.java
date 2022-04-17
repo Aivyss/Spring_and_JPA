@@ -3,8 +3,10 @@ package com.jpabook.jpashop.domain.order;
 import static com.jpabook.jpashop.domain.sequence.SequenceGenerators.ORDER_ITEM_SEQ_GEN;
 import static com.jpabook.jpashop.domain.sequence.Sequences.ORDER_ITEM_SEQ;
 
+import com.jpabook.jpashop.domain.common.Edits;
 import com.jpabook.jpashop.domain.item.Item;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -35,6 +37,9 @@ public class OrderItem {
 	@JoinColumn(name = "ORDER_ID")
 	@ManyToOne(fetch = FetchType.LAZY)
 	private Order order;
+	
+	@Embedded
+	private Edits edits;
 	
 	@Column(name = "ORDER_PRICE")
 	private int orderPrice;

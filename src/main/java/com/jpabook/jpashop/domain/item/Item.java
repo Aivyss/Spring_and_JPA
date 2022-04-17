@@ -4,10 +4,12 @@ import static com.jpabook.jpashop.domain.sequence.SequenceGenerators.ITEM_SEQ_GE
 import static com.jpabook.jpashop.domain.sequence.Sequences.ITEM_SEQ;
 
 import com.jpabook.jpashop.domain.category.Category;
+import com.jpabook.jpashop.domain.common.Edits;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -51,6 +53,9 @@ public abstract class Item {
 	
 	@Column(name = "PRICE")
 	private int price;
+	
+	@Embedded
+	private Edits edits;
 	
 	@ManyToMany(mappedBy = "items")
 	List<Category> categories = new ArrayList<>();

@@ -3,9 +3,9 @@ package com.jpabook.jpashop.domain.delivery;
 import static com.jpabook.jpashop.domain.sequence.SequenceGenerators.DELIVERY_SEQ_GEN;
 import static com.jpabook.jpashop.domain.sequence.Sequences.DELIVERY_SEQ;
 
-import com.jpabook.jpashop.domain.member.Address;
+import com.jpabook.jpashop.domain.common.Address;
+import com.jpabook.jpashop.domain.common.Edits;
 import com.jpabook.jpashop.domain.order.Order;
-import com.jpabook.jpashop.domain.order.OrderStatus;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -40,6 +40,9 @@ public class Delivery {
 	@Enumerated(EnumType.STRING)
 	@Column(name = "DELIVERY_STATUS")
 	private DeliveryStatus status;
+	
+	@Embedded
+	private Edits edits;
 	
 	@JoinColumn(name = "ORDER_ID")
 	@OneToOne(fetch = FetchType.LAZY)
