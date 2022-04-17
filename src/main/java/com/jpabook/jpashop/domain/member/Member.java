@@ -22,7 +22,6 @@ import lombok.ToString;
 
 @Entity
 @Getter
-@Setter
 @ToString
 @SequenceGenerator(name = MEM_SEQ_GEN, sequenceName = MEM_SEQ, initialValue = 1, allocationSize = 100)
 public class Member {
@@ -35,6 +34,9 @@ public class Member {
 	@Column(name = "NAME")
 	private String name;
 	
+	@Column(name = "NICKNAME", unique = true, nullable = false)
+	private String nickname;
+	
 	@Embedded
 	private Address address;
 	
@@ -43,4 +45,15 @@ public class Member {
 	
 	@OneToMany(mappedBy = "member") // 호스트 클래스의 필드변수명
 	private List<Order> orders = new ArrayList<>();
+	
+	protected Member() {}
+	
+	public Member(Long id, String name, String nickname,
+		Address address, Edits edits) {
+		this.id = id;
+		this.name = name;
+		this.nickname = nickname;
+		this.address = address;
+		this.edits = edits;
+	}
 }
