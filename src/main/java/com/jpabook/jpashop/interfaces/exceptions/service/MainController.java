@@ -1,4 +1,4 @@
-package com.jpabook.jpashop.service;
+package com.jpabook.jpashop.interfaces.exceptions.service;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
