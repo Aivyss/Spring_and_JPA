@@ -5,6 +5,7 @@ import static com.jpabook.jpashop.domain.sequence.Sequences.ITEM_SEQ;
 
 import com.jpabook.jpashop.domain.category.Category;
 import com.jpabook.jpashop.domain.common.Edits;
+import com.jpabook.jpashop.exception.NotEnoughStockException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Column;
@@ -19,7 +20,6 @@ import javax.persistence.InheritanceType;
 import javax.persistence.ManyToMany;
 import javax.persistence.SequenceGenerator;
 import lombok.Getter;
-import lombok.Setter;
 
 /**
  * <h1> 테이블 전략을 하나의 테이블에 다 집어넣는 것으로 선택하였음 </h1>
@@ -30,12 +30,12 @@ import lombok.Setter;
  * </ul>
  */
 @Entity
-@Setter
 @Getter
 @SequenceGenerator(name = ITEM_SEQ_GEN, sequenceName = ITEM_SEQ, initialValue = 1, allocationSize = 50)
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "D_TYPE") // 모든 테이블에 넣으려면 구분자 타입컬럼이 필요하므로 그것을 설정
-@SuppressWarnings({"JpaDataSourceORMInspection", "DefaultAnnotationParam", "unused"})
+@SuppressWarnings({"JpaDataSourceORMInspection", "DefaultAnnotationParam", "unused",
+	"FieldMayBeFinal"})
 public abstract class Item {
 	
 	@Id
@@ -56,11 +56,35 @@ public abstract class Item {
 	private Edits edits;
 	
 	@ManyToMany(mappedBy = "items")
-	List<Category> categories = new ArrayList<>();
+	private List<Category> categories = new ArrayList<>();
+	
+	public Item(Long id, String name, int stockQuantity, int price, Edits edit) {
+		this.id = id;
+		this.name = name;
+		this.stockQuantity = stockQuantity;
+		this.price = price;
+		this.edits = edit;
+	}
+	
+	// * default constructor for JPA
+	public Item() {}
 	
 	// * relation util methods
 	public void addCategory (Category category) {
 		this.categories.add(category);
 		category.getItems().add(this);
+	}
+	
+	// * business logics (재고수량 처리에 관련한 비즈니스 로직)
+	public void addStock(int quantity) {
+		this.stockQuantity += quantity;
+	}
+	
+	public void removeStock(int quantity) {
+		if (this.stockQuantity - quantity < 0) {
+			throw new NotEnoughStockException("001", "need more stock");
+		} else {
+			this.stockQuantity -= quantity;
+		}
 	}
 }
