@@ -1,26 +1,37 @@
 @startuml
 
-package Common {
+package Common_domain {
     class Address {
         - city: String
         - street: String
         - zipCode: String
     }
-    Address --> "1" Edits
 
     class Edits {
         - inputTime: LocalDateTime
         - deleted: DeletedFlag
         - member: Member
     }
+    Edits --> "1" DeletedFlag
 
-    enum DeleteFlag {
+    enum DeletedFlag {
         Y, N
     }
-    DeleteFlag "1" --> "1" Edits
 }
 
-package Account {
+package Category_domain {
+    class Category {
+        - id: Long
+        - name: String
+        - edit: Edits
+        - parent: Category
+        - children: List<Category>
+        - items: List<Item>
+    }
+    Category --> Category
+}
+
+package Account_domain {
     class Member {
         - id: Long
         - name: String
@@ -29,10 +40,11 @@ package Account {
         - edits: Edits
         - orders: List<Order>
     }
-    Member "1" <--> "1" Edits
+    Member --> "1" Address
+    Edits --> "1" Member
 }
 
-package Orders {
+package Orders_domain {
     class Order {
         - id: Long
         - orderDate: LocalDateTime
@@ -41,16 +53,25 @@ package Orders {
         - member: Member
         - delivery: Delivery
     }
-    Member "1" --> "0..*" Order
-    Edits "1" --> Order
+    Order --> "1" Member
+    Order --> "1" OrderStatus
 
     enum OrderStatus {
         ORDER, CANCEL
     }
-    OrderStatus --> "1" Order
+
+    class OrderItem {
+        - id: Long
+        - item: Item
+        - order: Order
+        - edits: Edits
+        - orderPrice: int
+        - count: int
+    }
+    OrderItem --> "1" Order
 }
 
-package Delivery {
+package Delivery_domain {
     class Delivery {
         - id: Long
         - address: Address
@@ -58,17 +79,34 @@ package Delivery {
         - edits: Edits
         - order: Order
     }
-    Delivery "1" <--> "1" Order
-    Address --> "1" Delivery
-    Edits --> "1" Delivery
+    Order "1" <--> "1" Delivery
+    Delivery --> "1" DeliveryStatus
+    Delivery --> "1" Address
 
     enum DeliveryStatus {
         READY, COMP
     }
-    DeliveryStatus --> "1" Delivery
 }
 
-package Items {
+package Persistence {
+    class MemberRepository {
+        - em: EntityManager
+        + save(member: Member): void
+        + findOne(id: Long): Member
+        + findAll(): List<Member>
+        + findByName(name: String): List<Member>
+        + findByNickname(nickname: String): Member
+    }
+
+    class ItemRepository {
+        - em: EntityManager
+        + save(item: Item): void
+        + findOne(id: Long): Item
+        + findAll(): List<Item>
+    }
+}
+
+package Items_domain {
     abstract class Item {
         - id: Long
         - name: String
@@ -80,6 +118,8 @@ package Items {
         + addStock(quantity: int): void
         + removeStock(quantity: int): void
     }
+    OrderItem --> "1" Item
+    Category --> "*" Item
 
     class Album {
         - artist: String
