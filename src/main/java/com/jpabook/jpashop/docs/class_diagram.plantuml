@@ -1,0 +1,103 @@
+@startuml
+
+package Common {
+    class Address {
+        - city: String
+        - street: String
+        - zipCode: String
+    }
+    Address --> "1" Edits
+
+    class Edits {
+        - inputTime: LocalDateTime
+        - deleted: DeletedFlag
+        - member: Member
+    }
+
+    enum DeleteFlag {
+        Y, N
+    }
+    DeleteFlag "1" --> "1" Edits
+}
+
+package Account {
+    class Member {
+        - id: Long
+        - name: String
+        - nickname: String
+        - address: Address
+        - edits: Edits
+        - orders: List<Order>
+    }
+    Member "1" <--> "1" Edits
+}
+
+package Orders {
+    class Order {
+        - id: Long
+        - orderDate: LocalDateTime
+        - status: OrderStatus
+        - edits: Edits
+        - member: Member
+        - delivery: Delivery
+    }
+    Member "1" --> "0..*" Order
+    Edits "1" --> Order
+
+    enum OrderStatus {
+        ORDER, CANCEL
+    }
+    OrderStatus --> "1" Order
+}
+
+package Delivery {
+    class Delivery {
+        - id: Long
+        - address: Address
+        - status: DeliveryStatus
+        - edits: Edits
+        - order: Order
+    }
+    Delivery "1" <--> "1" Order
+    Address --> "1" Delivery
+    Edits --> "1" Delivery
+
+    enum DeliveryStatus {
+        READY, COMP
+    }
+    DeliveryStatus --> "1" Delivery
+}
+
+package Items {
+    abstract class Item {
+        - id: Long
+        - name: String
+        - stockQuantity: int
+        - price: int
+        - edits: Edits
+        - categories: List<Category>
+
+        + addStock(quantity: int): void
+        + removeStock(quantity: int): void
+    }
+
+    class Album {
+        - artist: String
+        - etc: String
+    }
+    Album --|> Item
+
+    class Book {
+        - author: String
+        - isbn: String
+    }
+    Book --|> Item
+
+    class Movie {
+        - director: String
+        - actor: String
+    }
+    Movie --|> Item
+}
+
+@enduml
