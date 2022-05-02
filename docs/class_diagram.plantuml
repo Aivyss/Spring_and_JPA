@@ -1,143 +1,192 @@
 @startuml
+package aop {
+    annotation LogProcessTime
 
-package Common_domain {
-    class Address {
-        - city: String
-        - street: String
-        - zipCode: String
+    class LoggingAspect {
+        + logProcessTime(proceedingJoinPoint: ProceedingJoinPoint): Object
+    }
+    LoggingAspect -[dotted]-> LogProcessTime
+}
+package filter {
+}
+package interceptor {
+}
+package domain {
+    package Common_domain {
+        class Address {
+            - city: String
+            - street: String
+            - zipCode: String
+        }
+
+        class Edits {
+            - inputTime: LocalDateTime
+            - deleted: DeletedFlag
+            - member: Member
+        }
+        Edits --> "1" DeletedFlag
+
+        enum DeletedFlag {
+            Y, N
+        }
     }
 
-    class Edits {
-        - inputTime: LocalDateTime
-        - deleted: DeletedFlag
-        - member: Member
+    package Category_domain {
+        class Category {
+            - id: Long
+            - name: String
+            - edit: Edits
+            - parent: Category
+            - children: List<Category>
+            - items: List<Item>
+        }
+        Category --> Category
     }
-    Edits --> "1" DeletedFlag
 
-    enum DeletedFlag {
-        Y, N
+    package Account_domain {
+        class Member {
+            - id: Long
+            - name: String
+            - nickname: String
+            - address: Address
+            - edits: Edits
+            - orders: List<Order>
+        }
+        Member --> "1" Address
+        Edits --> "1" Member
+    }
+
+    package Orders_domain {
+        class Order {
+            - id: Long
+            - orderDate: LocalDateTime
+            - status: OrderStatus
+            - edits: Edits
+            - member: Member
+            - delivery: Delivery
+        }
+        Order --> "1" Member
+        Order --> "1" OrderStatus
+
+        enum OrderStatus {
+            ORDER, CANCEL
+        }
+
+        class OrderItem {
+            - id: Long
+            - item: Item
+            - order: Order
+            - edits: Edits
+            - orderPrice: int
+            - count: int
+        }
+        OrderItem --> "1" Order
+    }
+
+    package Delivery_domain {
+        class Delivery {
+            - id: Long
+            - address: Address
+            - status: DeliveryStatus
+            - edits: Edits
+            - order: Order
+        }
+        Order "1" <--> "1" Delivery
+        Delivery --> "1" DeliveryStatus
+        Delivery --> "1" Address
+
+        enum DeliveryStatus {
+            READY, COMP
+        }
+    }
+
+    package Items_domain {
+        abstract class Item {
+            - id: Long
+            - name: String
+            - stockQuantity: int
+            - price: int
+            - edits: Edits
+            - categories: List<Category>
+
+            + addStock(quantity: int): void
+            + removeStock(quantity: int): void
+        }
+        OrderItem --> "1" Item
+        Category --> "*" Item
+
+        class Album {
+            - artist: String
+            - etc: String
+        }
+        Album --|> Item
+
+        class Book {
+            - author: String
+            - isbn: String
+        }
+        Book --|> Item
+
+        class Movie {
+            - director: String
+            - actor: String
+        }
+        Movie --|> Item
     }
 }
 
-package Category_domain {
-    class Category {
-        - id: Long
-        - name: String
-        - edit: Edits
-        - parent: Category
-        - children: List<Category>
-        - items: List<Item>
-    }
-    Category --> Category
-}
 
-package Account_domain {
-    class Member {
-        - id: Long
-        - name: String
-        - nickname: String
-        - address: Address
-        - edits: Edits
-        - orders: List<Order>
-    }
-    Member --> "1" Address
-    Edits --> "1" Member
-}
+package mvc {
+    package mvc_member {
+        class MemberRepository {
+            - em: EntityManager
+            + save(member: Member): void
+            + findOne(id: Long): Member
+            + findAll(): List<Member>
+            + findByName(name: String): List<Member>
+            + findByNickname(nickname: String): Member
+        }
 
-package Orders_domain {
-    class Order {
-        - id: Long
-        - orderDate: LocalDateTime
-        - status: OrderStatus
-        - edits: Edits
-        - member: Member
-        - delivery: Delivery
-    }
-    Order --> "1" Member
-    Order --> "1" OrderStatus
+        interface MemberService {
+            + signUp(member: Member): Long
+            + findOneMember(id: Long): Member
+            + findAllMembers(): List<Member>
+        }
 
-    enum OrderStatus {
-        ORDER, CANCEL
+        class MemberServiceImpl {
+            - memberRepository: MemberRepository
+            + signUp(member: Member): Long
+            + findOneMember(id: Long): Member
+            + findAllMembers(): List<Member>
+            - findDuplicateMember(member: Member): void
+        }
+        MemberServiceImpl --|> MemberService
+        MemberServiceImpl --> "1" MemberRepository
     }
 
-    class OrderItem {
-        - id: Long
-        - item: Item
-        - order: Order
-        - edits: Edits
-        - orderPrice: int
-        - count: int
-    }
-    OrderItem --> "1" Order
-}
+    package mvc_item {
+        class ItemRepository {
+            - em: EntityManager
+            + save(item: Item): void
+            + findOne(id: Long): Item
+            + findAll(): List<Item>
+        }
 
-package Delivery_domain {
-    class Delivery {
-        - id: Long
-        - address: Address
-        - status: DeliveryStatus
-        - edits: Edits
-        - order: Order
-    }
-    Order "1" <--> "1" Delivery
-    Delivery --> "1" DeliveryStatus
-    Delivery --> "1" Address
+        interface ItemService {
+            + save(item: Item): void
+            + findItems(): List<Item>
+            + findOne(id: Long): Item
+        }
 
-    enum DeliveryStatus {
-        READY, COMP
+        class ItemServiceImpl {
+            - itemRepository: ItemRepository
+            + save(item: Item): void
+            + findItems(): List<Item>
+            + findOne(id: Long): Item
+        }
+        ItemServiceImpl --|>ItemService
+        ItemServiceImpl --> "1" ItemRepository
     }
-}
-
-package Persistence {
-    class MemberRepository {
-        - em: EntityManager
-        + save(member: Member): void
-        + findOne(id: Long): Member
-        + findAll(): List<Member>
-        + findByName(name: String): List<Member>
-        + findByNickname(nickname: String): Member
-    }
-
-    class ItemRepository {
-        - em: EntityManager
-        + save(item: Item): void
-        + findOne(id: Long): Item
-        + findAll(): List<Item>
-    }
-}
-
-package Items_domain {
-    abstract class Item {
-        - id: Long
-        - name: String
-        - stockQuantity: int
-        - price: int
-        - edits: Edits
-        - categories: List<Category>
-
-        + addStock(quantity: int): void
-        + removeStock(quantity: int): void
-    }
-    OrderItem --> "1" Item
-    Category --> "*" Item
-
-    class Album {
-        - artist: String
-        - etc: String
-    }
-    Album --|> Item
-
-    class Book {
-        - author: String
-        - isbn: String
-    }
-    Book --|> Item
-
-    class Movie {
-        - director: String
-        - actor: String
-    }
-    Movie --|> Item
 }
 
 @enduml
