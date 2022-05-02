@@ -1,4 +1,4 @@
-package com.jpabook.jpashop.service.member;
+package com.jpabook.jpashop.mvc.member;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -12,7 +12,6 @@ import com.jpabook.jpashop.domain.common.Edits;
 import com.jpabook.jpashop.domain.member.Member;
 import com.jpabook.jpashop.exception.DuplicateRowException;
 import com.jpabook.jpashop.interfaces.exceptions.service.member.MemberServiceImpl;
-import com.jpabook.jpashop.persist.MemberRepository;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;

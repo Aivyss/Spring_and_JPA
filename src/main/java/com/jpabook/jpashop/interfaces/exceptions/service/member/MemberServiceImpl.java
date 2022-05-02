@@ -2,7 +2,7 @@ package com.jpabook.jpashop.interfaces.exceptions.service.member;
 
 import com.jpabook.jpashop.domain.member.Member;
 import com.jpabook.jpashop.exception.DuplicateRowException;
-import com.jpabook.jpashop.persist.MemberRepository;
+import com.jpabook.jpashop.mvc.member.MemberRepository;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

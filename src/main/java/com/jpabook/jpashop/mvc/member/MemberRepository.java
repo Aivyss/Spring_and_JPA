@@ -1,4 +1,4 @@
-package com.jpabook.jpashop.persist;
+package com.jpabook.jpashop.mvc.member;
 
 import com.jpabook.jpashop.domain.member.Member;
 import java.util.List;
@@ -6,6 +6,11 @@ import javax.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+/**
+ * <ul>
+ *     <li> MEMBER Table access class </li>
+ * </ul>
+ */
 @Repository
 public class MemberRepository {
 	

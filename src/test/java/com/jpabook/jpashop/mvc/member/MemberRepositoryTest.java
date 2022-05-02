@@ -1,4 +1,4 @@
-package com.jpabook.jpashop.persist;
+package com.jpabook.jpashop.mvc.member;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

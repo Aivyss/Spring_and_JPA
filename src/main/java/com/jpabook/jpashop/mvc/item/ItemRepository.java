@@ -1,4 +1,4 @@
-package com.jpabook.jpashop.persist;
+package com.jpabook.jpashop.mvc.item;
 
 import com.jpabook.jpashop.domain.item.Item;
 import java.util.List;
@@ -6,6 +6,11 @@ import javax.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+/**
+ * <ul>
+ *     <li> ITEM Table Access Class </li>
+ * </ul>
+ */
 @Repository
 @RequiredArgsConstructor
 public class ItemRepository {
