@@ -72,7 +72,7 @@ public class Order {
 	 *     <li> order를 persist할 때 이 옵션의 것까지 모두 persist </li>
 	 * </ul>
 	 */
-	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private List<OrderItem> orderItems = new ArrayList<>();
 	
 	// * default constructor for JPA
@@ -87,7 +87,9 @@ public class Order {
 		this.edits = edits;
 		this.orderDate = orderDate;
 		this.status = orderStatus;
-		this.orderItems = Arrays.stream(orderItems).toList();
+		if (orderItems.length > 0) {
+			this.orderItems = Arrays.stream(orderItems).toList();
+		}
 	}
 	
 	// * relation util methods
@@ -96,22 +98,26 @@ public class Order {
 		member.getOrders().add(this);
 	}
 	
+	public void setDelivery(Delivery delivery) {
+		this.delivery = delivery;
+		this.delivery.setOrder(this);
+	}
+	
 	public void addOrderItem(OrderItem orderItem) {
-		orderItem.setOrder(this);
 		this.orderItems.add(orderItem);
+		orderItem.setOrder(this);
 	}
 	
 	// * simple business logics
-	public static Order newOrder(Member member, Delivery delivery, OrderItem... orderItems) {
+	public static Order newOrder(Member member) {
 		final LocalDateTime currentTime = LocalDateTime.now();
 		return new Order(
 			null,
 			member,
-			delivery,
+			null,
 			new Edits(currentTime, DeletedFlag.N, member),
 			currentTime,
-			OrderStatus.ORDER,
-			orderItems
+			OrderStatus.ORDER
 		);
 	}
 	
@@ -121,7 +127,8 @@ public class Order {
 		}
 		
 		status = OrderStatus.CANCEL;
-		delivery.setStatus(DeliveryStatus.CANCEL);
+		edits.setDeleted(DeletedFlag.Y);
+		delivery.cancel();
 		orderItems.forEach(OrderItem::cancel);
 	}
 	

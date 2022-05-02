@@ -4,6 +4,8 @@ import com.jpabook.jpashop.domain.member.Member;
 import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -29,6 +31,7 @@ public class Edits {
 	private LocalDateTime inputTime;
 	
 	@Column(name = "DELETED")
+	@Enumerated(EnumType.STRING)
 	private DeletedFlag deleted;
 	
 	@JoinColumn(name = "EDIT_MEMBER_ID")

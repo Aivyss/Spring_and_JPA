@@ -70,8 +70,18 @@ public class Delivery {
 		);
 	}
 	
+	public void cancel() {
+		status = DeliveryStatus.CANCEL;
+		edits.setDeleted(DeletedFlag.Y);
+	}
+	
 	// * setters
-	public void setStatus(DeliveryStatus status) {
-		this.status = status;
+	
+	/**
+	 * 양방향 연관관계 메소드 때문에 필요함
+	 * @param order 주문
+	 */
+	public void setOrder(Order order) {
+		this.order = order;
 	}
 }

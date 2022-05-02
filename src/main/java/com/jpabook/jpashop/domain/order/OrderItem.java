@@ -19,7 +19,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import lombok.Getter;
-import lombok.Setter;
 
 @Entity
 @Getter
@@ -55,16 +54,15 @@ public class OrderItem {
 		this.item = item;
 		this.order = order;
 		this.edits = edits;
-		this.orderPrice = calcOrderPrice(item, count);
+		this.orderPrice = item.getPrice();
 		this.count = count;
 	}
 	
-	public int calcOrderPrice(Item item, int count) {
-		return item.getPrice() * count;
-	}
 	
 	// * create new OrderItem
 	public static OrderItem newOrderItem(Item item, Order order, Member member, int count) {
+		item.removeStock(count);
+		
 		return new OrderItem(
 			null,
 			item,
@@ -84,7 +82,11 @@ public class OrderItem {
 		return orderPrice * count;
 	}
 	
-	// * setters
+	/**
+	 * 양방향 연관관계면 연관관계 편의메소드 때문에 필요함.
+	 *
+	 * @param order 주문
+	 */
 	public void setOrder(Order order) {
 		this.order = order;
 	}
