@@ -8,6 +8,7 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import lombok.Getter;
+import lombok.Setter;
 
 /**
  * <ul>
@@ -19,6 +20,7 @@ import lombok.Getter;
  */
 @Embeddable
 @Getter
+@Setter
 @SuppressWarnings("JpaDataSourceORMInspection")
 
 public class Edits {
