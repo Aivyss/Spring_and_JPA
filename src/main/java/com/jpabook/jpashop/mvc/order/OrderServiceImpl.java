@@ -5,6 +5,7 @@ import com.jpabook.jpashop.domain.item.Item;
 import com.jpabook.jpashop.domain.member.Member;
 import com.jpabook.jpashop.domain.order.Order;
 import com.jpabook.jpashop.domain.order.OrderItem;
+import com.jpabook.jpashop.dto.OrderSearchFilter;
 import com.jpabook.jpashop.mvc.item.ItemRepository;
 import com.jpabook.jpashop.mvc.member.MemberRepository;
 import java.util.List;
@@ -52,7 +53,7 @@ public class OrderServiceImpl implements OrderService {
 	}
 	
 	@Override
-	public List<Order> findOrders() {
-		return null;
+	public List<Order> searchOrders(OrderSearchFilter filter) {
+		return orderRepository.searchOrders(filter);
 	}
 }

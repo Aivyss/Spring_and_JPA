@@ -36,14 +36,14 @@ public class Edits {
 	
 	@JoinColumn(name = "EDIT_MEMBER_ID")
 	@ManyToOne(fetch = FetchType.LAZY)
-	private Member member;
+	private Member editMember;
 	
 	protected Edits() {}
 	
 	public Edits(LocalDateTime inputTime, DeletedFlag deleted,
-		Member member) {
+		Member editMember) {
 		this.inputTime = inputTime;
 		this.deleted = deleted;
-		this.member = member;
+		this.editMember = editMember;
 	}
 }
