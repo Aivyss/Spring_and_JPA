@@ -146,6 +146,15 @@ package domain {
     }
 }
 
+package exception {
+    class DuplicateRowException {
+        - errorCode: String
+    }
+    class NotEnoughStockException {
+        - errorCode: String
+    }
+}
+
 
 package mvc {
     package mvc_member {
@@ -226,6 +235,16 @@ package mvc {
         OrderServiceImpl --> "1" OrderRepository
         OrderServiceImpl --> "1" MemberRepository
         OrderServiceImpl --> "1" ItemRepository
+    }
+}
+
+package interfaces {
+    package exceptions {
+        interface JPAShopError {
+            + getErrorCode(): String
+        }
+        DuplicateRowException --|> JPAShopError
+        NotEnoughStockException --|> JPAShopError
     }
 }
 
