@@ -1,6 +1,9 @@
 # Abstract
 Side Project for Spring & JPA Study
 
+# Class diagram
+![class_diagram](https://github.com/Aivyss/Spring_and_JPA/blob/master/docs/class_diagram.png?raw=true)
+
 # Project Specification
 
 ## Database (RDBMS)
