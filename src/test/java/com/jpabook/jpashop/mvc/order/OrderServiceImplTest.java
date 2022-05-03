@@ -19,7 +19,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
@@ -37,24 +36,14 @@ public class OrderServiceImplTest {
 	@Test
 	@DisplayName("상품 주문")
 	@Transactional
-	@Rollback(value = false)
 	public void testSave() {
 	    // * given
 		String memberName = "memberA";
 		String memberNickname = "nicknameA";
-		Member member = new Member(
-			null,
-			memberName,
-			memberNickname,
-			new Address("city", "street", "10-1010"),
-			new Edits(LocalDateTime.now(), DeletedFlag.N, null)
-		);
-		Edits edit = new Edits(LocalDateTime.now(), DeletedFlag.N, member);
-		Book book = new Book(
-			null, "book_name", 100, 5000,
-			"author_name", "isbn", edit
-		);
+		int stockQuantity = 100;
 		int count = 5;
+		Member member = getMember(memberName, memberNickname);
+		Book book = getBook(member, stockQuantity);
 		
 		memberRepository.save(member);
 		itemRepository.save(book);
@@ -67,6 +56,7 @@ public class OrderServiceImplTest {
 		assertThat(id).isGreaterThan(0L);
 		assertThat(actualOrder.getStatus()).isEqualTo(OrderStatus.ORDER);
 		assertThat(actualOrder.getDelivery().getStatus()).isEqualTo(DeliveryStatus.READY);
+		assertThat(actualOrder.getOrderItems().get(0).getItem().getStockQuantity()).isSameAs(stockQuantity - count);
 		actualOrder.getOrderItems().forEach(orderItem -> {
 			assertThat(orderItem.getCount()).isEqualTo(count);
 			assertThat(orderItem.getTotalPrice()).isEqualTo(count * orderItem.getItem().getPrice());
@@ -75,23 +65,15 @@ public class OrderServiceImplTest {
 	
 	@Test
 	@DisplayName("상품 주문 취소")
+	@Transactional
 	public void testCancelOrder() {
 		// * given
 		String memberName = "memberA";
 		String memberNickname = "nicknameA";
-		Member member = new Member(
-			null,
-			memberName,
-			memberNickname,
-			new Address("city", "street", "10-1010"),
-			new Edits(LocalDateTime.now(), DeletedFlag.N, null)
-		);
-		Edits edit = new Edits(LocalDateTime.now(), DeletedFlag.N, member);
-		Book book = new Book(
-			null, "book_name", 100, 5000,
-			"author_name", "isbn", edit
-		);
+		int stockQuantity = 100;
 		int count = 5;
+		Member member = getMember(memberName, memberNickname);
+		Book book = getBook(member, stockQuantity);
 		
 		memberRepository.save(member);
 		itemRepository.save(book);
@@ -110,21 +92,12 @@ public class OrderServiceImplTest {
 	@DisplayName("상품 주문 재고 수량 초과")
 	public void testExceedStock() {
 		// * given
-		int totalCount = 1;
 		String memberName = "memberA";
 		String memberNickname = "nicknameA";
-		Member member = new Member(
-			null,
-			memberName,
-			memberNickname,
-			new Address("city", "street", "10-1010"),
-			new Edits(LocalDateTime.now(), DeletedFlag.N, null)
-		);
-		Edits edit = new Edits(LocalDateTime.now(), DeletedFlag.N, member);
-		Book book = new Book(
-			null, "book_name", totalCount, 5000,
-			"author_name", "isbn", edit
-		);
+		int totalCount = 1;
+		
+		Member member = getMember(memberName, memberNickname);
+		Book book = getBook(member, totalCount);
 		
 		memberRepository.save(member);
 		itemRepository.save(book);
@@ -133,5 +106,24 @@ public class OrderServiceImplTest {
 		).isInstanceOf(NotEnoughStockException.class).hasMessage("need more stock");
 		
 		
+	}
+	
+	// * test util methods
+	private Member getMember(String memberName, String memberNickname) {
+		return new Member(
+			null,
+			memberName,
+			memberNickname,
+			new Address("city", "street", "10-1010"),
+			new Edits(LocalDateTime.now(), DeletedFlag.N, null)
+		);
+	}
+	
+	private Book getBook(Member member, int stockQuantity) {
+		Edits edit = new Edits(LocalDateTime.now(), DeletedFlag.N, member);
+		return new Book(
+			null, "book_name", stockQuantity, 5000,
+			"author_name", "isbn", edit
+		);
 	}
 }
