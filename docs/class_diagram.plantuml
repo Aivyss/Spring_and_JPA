@@ -11,6 +11,16 @@ package filter {
 }
 package interceptor {
 }
+
+package DTO {
+    class OrderSearchFilter {
+        - memberName: String
+        - orderStatus: OrderStatus
+        + getMemberName(): String
+        + getOrderStatus(): OrderStatus
+    }
+}
+
 package domain {
     package Common_domain {
         class Address {
@@ -67,6 +77,7 @@ package domain {
         }
         Order --> "1" Member
         Order --> "1" OrderStatus
+        OrderSearchFilter --> "1" OrderStatus
 
         enum OrderStatus {
             ORDER, CANCEL
@@ -186,6 +197,35 @@ package mvc {
         }
         ItemServiceImpl --|>ItemService
         ItemServiceImpl --> "1" ItemRepository
+    }
+
+    package mvc_order {
+        class OrderRepository {
+            + save(order: Order)
+            + fineOne(id: Long): Order
+            + searchOrders(filter: OrderSearchFilter): List<Order>
+        }
+        OrderRepository -[dotted]-> OrderSearchFilter
+
+        interface OrderService {
+            + createOrder(memberId: Long, itemId: Long, count: int)
+            + cancelOrder(orderId: Long)
+            + searchOrders(filter: OrderSearchFilter)
+        }
+        OrderService -[dotted]-> OrderSearchFilter
+
+        class OrderServiceImpl {
+            - orderRepository: OrderRepository
+            - memberRepository: MemberRepository
+            - itemRepository: ItemRepository
+            + createOrder(memberId: Long, itemId: Long, count: int)
+            + cancelOrder(orderId: Long)
+            + searchOrders(filter: OrderSearchFilter)
+        }
+        OrderServiceImpl --|> OrderService
+        OrderServiceImpl --> "1" OrderRepository
+        OrderServiceImpl --> "1" MemberRepository
+        OrderServiceImpl --> "1" ItemRepository
     }
 }
 
