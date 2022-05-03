@@ -11,7 +11,7 @@ import com.jpabook.jpashop.domain.common.DeletedFlag;
 import com.jpabook.jpashop.domain.common.Edits;
 import com.jpabook.jpashop.domain.member.Member;
 import com.jpabook.jpashop.exception.DuplicateRowException;
-import com.jpabook.jpashop.interfaces.exceptions.service.member.MemberServiceImpl;
+import com.jpabook.jpashop.interfaces.exceptions.JPAShopError;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
@@ -48,7 +48,7 @@ class MemberServiceImplTest {
 		when(memberRepository.findByNickname(eq(memberNickname))).thenReturn(member);
 		
 		// * then
-		assertThatThrownBy(()-> memberService.signUp(member)).isInstanceOf(DuplicateRowException.class)
+		assertThatThrownBy(()-> memberService.signUp(member)).isInstanceOf(JPAShopError.class).isInstanceOf(DuplicateRowException.class)
 			.hasMessage("이미 존재하는 회원입니다.");
 	}
 	

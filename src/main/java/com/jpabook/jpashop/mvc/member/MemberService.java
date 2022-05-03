@@ -1,4 +1,4 @@
-package com.jpabook.jpashop.interfaces.exceptions.service.member;
+package com.jpabook.jpashop.mvc.member;
 
 import com.jpabook.jpashop.domain.member.Member;
 import java.util.List;

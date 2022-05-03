@@ -4,10 +4,15 @@
 - Service > Domain
 - Repository > domain
 
+# Business Logic Design Pattern
+- Domain Model Parttern
+
 # Package Structure
 - com.jpabook.jpashoot
-  - domain
+  - annotation
+    - aop
+  - aop
+  - dto
   - exception
-  - persist
-  - service
-  - web
+  - interface
+    - exceptions

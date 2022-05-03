@@ -13,6 +13,7 @@ import com.jpabook.jpashop.domain.order.Order;
 import com.jpabook.jpashop.domain.order.OrderStatus;
 import com.jpabook.jpashop.dto.OrderSearchFilter;
 import com.jpabook.jpashop.exception.NotEnoughStockException;
+import com.jpabook.jpashop.interfaces.exceptions.JPAShopError;
 import com.jpabook.jpashop.mvc.item.ItemRepository;
 import com.jpabook.jpashop.mvc.member.MemberRepository;
 import java.time.LocalDateTime;
@@ -113,7 +114,7 @@ public class OrderServiceImplTest {
 		itemRepository.save(book);
 		assertThatThrownBy(
 			() -> orderService.createOrder(member.getId(), book.getId(), 10000)
-		).isInstanceOf(NotEnoughStockException.class).hasMessage("need more stock");
+		).isInstanceOf(JPAShopError.class).isInstanceOf(NotEnoughStockException.class).hasMessage("need more stock");
 	}
 	
 	@Test
