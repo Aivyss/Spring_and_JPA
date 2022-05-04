@@ -38,7 +38,7 @@ public class Edits {
 	@ManyToOne(fetch = FetchType.LAZY)
 	private Member editMember;
 	
-	protected Edits() {}
+	public Edits() {}
 	
 	public Edits(LocalDateTime inputTime, DeletedFlag deleted,
 		Member editMember) {

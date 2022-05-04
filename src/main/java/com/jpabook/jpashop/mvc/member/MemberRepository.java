@@ -3,6 +3,8 @@ package com.jpabook.jpashop.mvc.member;
 import com.jpabook.jpashop.domain.member.Member;
 import java.util.List;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -12,6 +14,7 @@ import org.springframework.stereotype.Repository;
  * </ul>
  */
 @Repository
+@Slf4j
 public class MemberRepository {
 	
 	private final EntityManager em;
@@ -83,9 +86,16 @@ public class MemberRepository {
 	 * @return 조회된 유저
 	 */
 	public Member findByNickname(String nickname) {
-		return em.createQuery(
-			"select m from Member m where m.nickname = :nickname",
-			Member.class
-		).setParameter("nickname", nickname).getSingleResult();
+		Member member = null;
+		try {
+			member = em.createQuery(
+				"select m from Member m where m.nickname = :nickname",
+				Member.class
+			).setParameter("nickname", nickname).getSingleResult();
+		} catch(NoResultException e) {
+			log.info("일치하는 회원 없음");
+		}
+		
+		return member;
 	}
 }

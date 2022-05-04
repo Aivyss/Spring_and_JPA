@@ -4,8 +4,12 @@ import static com.jpabook.jpashop.domain.sequence.SequenceGenerators.MEM_SEQ_GEN
 import static com.jpabook.jpashop.domain.sequence.Sequences.MEM_SEQ;
 
 import com.jpabook.jpashop.domain.common.Address;
+import com.jpabook.jpashop.domain.common.DeletedFlag;
 import com.jpabook.jpashop.domain.common.Edits;
 import com.jpabook.jpashop.domain.order.Order;
+import com.jpabook.jpashop.dto.AddressForm;
+import com.jpabook.jpashop.dto.MemberForm;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Column;
@@ -21,7 +25,8 @@ import lombok.Getter;
 @Entity
 @Getter
 @SequenceGenerator(name = MEM_SEQ_GEN, sequenceName = MEM_SEQ, initialValue = 1, allocationSize = 100)
-@SuppressWarnings({"JpaDataSourceORMInspection", "DefaultAnnotationParam", "unused", "FieldMayBeFinal"})
+@SuppressWarnings({"JpaDataSourceORMInspection", "DefaultAnnotationParam", "unused",
+	"FieldMayBeFinal"})
 public class Member {
 	
 	@Id
@@ -44,7 +49,8 @@ public class Member {
 	@OneToMany(mappedBy = "member") // 호스트 클래스의 필드변수명
 	private List<Order> orders = new ArrayList<>();
 	
-	protected Member() {}
+	protected Member() {
+	}
 	
 	public Member(Long id, String name, String nickname,
 		Address address, Edits edits) {
@@ -53,5 +59,15 @@ public class Member {
 		this.nickname = nickname;
 		this.address = address;
 		this.edits = edits;
+	}
+	
+	public static Member newMember(String name, String nickname, Address address) {
+		return new Member(null, name, nickname, address,
+			new Edits(LocalDateTime.now(), DeletedFlag.N, null));
+	}
+	
+	public static Member formToMember(MemberForm form) {
+		final AddressForm address = form.getAddress();
+		return newMember(form.getName(), form.getNickname(), new Address(address.getCity(), address.getStreet(), address.getZipCode()));
 	}
 }
