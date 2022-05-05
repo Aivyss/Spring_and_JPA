@@ -81,7 +81,7 @@ package domain {
             - orders: List<Order>
         }
         MemberForm --> "1" AddressForm
-        MemberForm -[dotted]-> Member
+        MemberForm -r[dotted]-> Member
         Member --> "1" Address
         Edits --> "1" Member
     }
@@ -272,7 +272,7 @@ package mvc {
         OrderServiceImpl --|> OrderService
         OrderServiceImpl --> "1" OrderRepository
         OrderServiceImpl --> "1" MemberRepository
-        OrderServiceImpl --> "1" ItemRepository
+        OrderServiceImpl -d-> "1" ItemRepository
     }
 }
 
@@ -320,7 +320,7 @@ package Exception {
     }
     CommonError --|> JPAShopError
     CommonError --> "1" ExceptionCase
-    CommonError -[dotted]-> MessageService
+    CommonError -[dotted]---> MessageService
 
     interface JPAShopError {
         + setErrorMessage(messageService: MessageService)
@@ -335,4 +335,13 @@ package Exception {
     ExceptionController -[dotted]-> common$error
     ExceptionController --> "1" MessageService
 }
+
+'package positioning
+domain -[hidden]-> mvc
+mvc_member -u[hidden]-> ViewTemplate
+ViewTemplate -u[hidden]-> mvc_order
+LoggingAspect -u[hidden]---> MessageServiceImpl
+JPAShopError -d[hidden]------>MemberForm
+i18n -u[hidden]> aop
+aop -u[hidden]-> domain
 @enduml
