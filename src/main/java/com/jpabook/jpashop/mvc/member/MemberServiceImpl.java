@@ -73,7 +73,7 @@ public class MemberServiceImpl implements MemberService {
 	private void findDuplicateMember(Member member) {
 		final Member findMember = memberRepository.findByNickname(member.getNickname());
 		if (findMember != null) {
-			throw new CommonError(ExceptionCase.DUPLCIATE_ROW, "001", "EXCEPTION.DUPLICATE_ROW_MEMBER");
+			throw new CommonError(ExceptionCase.DUPLICATE_ROW, "001", "EXCEPTION.DUPLICATE_ROW_MEMBER");
 		}
 	}
 }

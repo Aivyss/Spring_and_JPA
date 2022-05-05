@@ -1,5 +1,6 @@
 package com.jpabook.jpashop.exception;
 
+import com.jpabook.jpashop.i18n.MessageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;

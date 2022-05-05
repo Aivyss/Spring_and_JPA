@@ -1,10 +1,10 @@
 package com.jpabook.jpashop.exception;
 
-import com.jpabook.jpashop.exception.MessageService;
+import com.jpabook.jpashop.i18n.MessageService;
 import com.jpabook.jpashop.interfaces.exceptions.JPAShopError;
 
 public class CommonError extends RuntimeException implements JPAShopError {
-	private ExceptionCase exceptionCase;
+	private final ExceptionCase exceptionCase;
 	private String errorCode;
 	private String messageId;
 	private String errorMessage;

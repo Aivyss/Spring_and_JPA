@@ -24,14 +24,18 @@ package DTO {
         - city: String
         - street: String
         - zipCode: String
+        + static formToEntity(form: AddressForm): Address
+        + static entityToForm(address: Address): AddressForm
     }
+
 
     class MemberForm {
         - name: String
         - nickname: String
         - address: AddressForm
+        + static formToMember(form: MemberForm): Member
+        + static memberToForm(member: Member): MemberForm
     }
-    MemberForm --> "1" AddressForm
 }
 
 package domain {
@@ -41,6 +45,7 @@ package domain {
             - street: String
             - zipCode: String
         }
+        AddressForm -[dotted]-> Address
 
         class Edits {
             - inputTime: LocalDateTime
@@ -74,12 +79,11 @@ package domain {
             - address: Address
             - edits: Edits
             - orders: List<Order>
-            + static newMember(name: String, nickname: String, address: Address): Member
-            + static formToMember(form: MemberForm): Member
         }
+        MemberForm --> "1" AddressForm
+        MemberForm -[dotted]-> Member
         Member --> "1" Address
         Edits --> "1" Member
-        Member -[dotted]-> MemberForm
     }
 
     package Orders_domain {
@@ -162,34 +166,33 @@ package domain {
     }
 }
 
-package exception {
-    class DuplicateRowException {
-        - errorCode: String
-    }
-    class NotEnoughStockException {
-        - errorCode: String
-    }
-}
-
-
 package mvc {
     class MainController {
         + mainView(): main
     }
 
     package ViewTemplate {
-        interface signup_form
+        note top of ViewTemplate
+             뷰템플릿의 $ 한개는
+             디렉토리 구분을 위해서 쓰임탬
+        end note
+
+        interface member$signup_form
+        interface member$member_list
+        interface common$error
         interface main
 
         MemberController -[dotted]-> main
-        MemberController -[dotted]-> signup_form
+        MemberController -[dotted]-> member$signup_form
+        MemberController -[dotted]-> member$member_list
         MainController -[dotted]-> main
     }
     package mvc_member {
         class MemberController {
             - memberService: MemberService
-            + createSignupForm(model: Model): signup_form
-            + signup(memberForm: MemberForm, result: BindingResult): main | signup_form
+            + viewSignupForm(model: Model): member$signup_form
+            + viewMemberList(model: Model): member$member_list
+            + signup(memberForm: MemberForm, result: BindingResult): main | member$signup_form
         }
         MemberController --> "1" MemberService
 
@@ -273,14 +276,63 @@ package mvc {
     }
 }
 
-package interfaces {
-    package exceptions {
-        interface JPAShopError {
-            + getErrorCode(): String
-        }
-        DuplicateRowException --|> JPAShopError
-        NotEnoughStockException --|> JPAShopError
+package i18n {
+    interface MessageService {
+        + convertMessage(messageId: String, args: ...String): String
     }
+
+    class MessageServiceImpl {
+        - messageSource: MessageSource
+        + convertMessage(messageId: String, args: ...String): String
+    }
+    MessageServiceImpl --|> MessageService
+
+    class GlobalConfig {
+        + messageSource(basename: String, encoding: String, cacheTime: int): MessageSource
+        + localeResolver(): LocaleResolver
+        + localeChangeInterceptor(): LocaleChangeInterceptor
+        + addInterceptors(registry: InterceptorRegistry)
+    }
+
+    interface $$WebMvcConfigurer
+    GlobalConfig --|> $$WebMvcConfigurer
+    note left of $$WebMvcConfigurer
+        $$은 스프링에 의해서 제공되는
+        객체, 인터페이스 등을 의미함
+    end note
 }
 
+package Exception {
+    enum ExceptionCase {
+        DUPLICATE_ROW, NOT_ENOUGH_STOCK
+    }
+
+    class CommonError {
+        - exceptionCase: ExceptionCase
+        - errorCode: String
+        - messageId: String
+        - errorMessage: String
+        - args: String[]
+        + setErrorMessage(messageService: MessageService)
+        + getErrorCode(): String
+        + getMessageId(): String
+        + getErrorMessage(): String
+    }
+    CommonError --|> JPAShopError
+    CommonError --> "1" ExceptionCase
+    CommonError -[dotted]-> MessageService
+
+    interface JPAShopError {
+        + setErrorMessage(messageService: MessageService)
+        + getErrorCode(): String
+        + getMessageId(): String
+        + getErrorMessage(): String
+    }
+    class ExceptionController {
+        - messageService: MessageService
+        + handleException(e: CommonError, model: RedirectAttributes): common$error
+    }
+    ExceptionController -[dotted]-> common$error
+    ExceptionController --> "1" MessageService
+}
 @enduml

@@ -1,4 +1,4 @@
-package com.jpabook.jpashop.exception;
+package com.jpabook.jpashop.i18n;
 
 import java.util.Locale;
 import lombok.RequiredArgsConstructor;

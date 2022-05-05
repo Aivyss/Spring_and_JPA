@@ -1,6 +1,6 @@
 package com.jpabook.jpashop.interfaces.exceptions;
 
-import com.jpabook.jpashop.exception.MessageService;
+import com.jpabook.jpashop.i18n.MessageService;
 
 public interface JPAShopError {
 	

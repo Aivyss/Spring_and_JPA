@@ -35,7 +35,7 @@ public class MemberController {
 	}
 	
 	@GetMapping("/new")
-	public String createSignupForm(Model model) {
+	public String viewSignupForm(Model model) {
 		// * give form
 		model.addAttribute("memberForm", new MemberForm());
 		
