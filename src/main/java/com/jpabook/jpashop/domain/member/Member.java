@@ -7,8 +7,6 @@ import com.jpabook.jpashop.domain.common.Address;
 import com.jpabook.jpashop.domain.common.DeletedFlag;
 import com.jpabook.jpashop.domain.common.Edits;
 import com.jpabook.jpashop.domain.order.Order;
-import com.jpabook.jpashop.dto.AddressForm;
-import com.jpabook.jpashop.dto.MemberForm;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;

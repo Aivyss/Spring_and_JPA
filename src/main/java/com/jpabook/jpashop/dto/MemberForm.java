@@ -8,14 +8,34 @@ import lombok.Setter;
 
 @Getter @Setter
 public class MemberForm {
-	@NotEmpty(message = "회원 이름은 필수 입니다.")
-	private String name;
-	@NotEmpty(message = "회원 아이디는 필수 입니다.")
+	@NotEmpty(message = "{FORM_INSTANCE.MEMBER_FORM.NOT_EMPTY.NICKNAME}")
 	private String nickname;
+	@NotEmpty(message = "{FORM_INSTANCE.MEMBER_FORM.NOT_EMPTY.NAME}")
+	private String name;
 	private AddressForm address;
+	private Long id;
 	
 	public static Member formToMember(MemberForm form) {
-		final AddressForm address = form.getAddress();
-		return Member.newMember(form.getName(), form.getNickname(), new Address(address.getCity(), address.getStreet(), address.getZipCode()));
+		final AddressForm addressForm = form.getAddress();
+		return Member.newMember(form.getName(), form.getNickname(), AddressForm.formToEntity(addressForm));
+	}
+	
+	public static MemberForm memberToForm(Member member) {
+		// * get variables from entities
+		final String nickname = member.getNickname();
+		final String name = member.getName();
+		final Address address = member.getAddress();
+		final Long id = member.getId();
+		
+		// * make forms
+		final MemberForm memberForm = new MemberForm();
+		final AddressForm addressForm = AddressForm.entityToForm(address);
+		memberForm.setNickname(nickname);
+		memberForm.setName(name);
+		memberForm.setAddress(addressForm);
+		memberForm.setId(id);
+		
+		return memberForm;
 	}
 }
+
