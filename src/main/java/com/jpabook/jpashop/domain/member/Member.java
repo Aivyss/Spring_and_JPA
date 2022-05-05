@@ -65,9 +65,4 @@ public class Member {
 		return new Member(null, name, nickname, address,
 			new Edits(LocalDateTime.now(), DeletedFlag.N, null));
 	}
-	
-	public static Member formToMember(MemberForm form) {
-		final AddressForm address = form.getAddress();
-		return newMember(form.getName(), form.getNickname(), new Address(address.getCity(), address.getStreet(), address.getZipCode()));
-	}
 }

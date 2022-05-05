@@ -41,7 +41,7 @@ public class MemberController {
 		}
 		
 		// * DTO -> Entity & save
-		final Member member = Member.formToMember(signupForm);
+		final Member member = MemberForm.formToMember(signupForm);
 		memberService.signUp(member);
 		
 		// * redirect
