@@ -13,32 +13,38 @@
     
     <form role="form" action="/members/new" th:object="${memberForm}" method="post">
         <div class="form-group">
-            <label th:for="nickname">닉네임</label>
+            <label th:for="nickname" th:text="${#messages.msg('HTML.SIGNUP_FORM.NICKNAME_LABEL')}">닉네임</label>
         
-            <input type="text" th:field="*{nickname}" class="form-control" placeholder="닉네임을 입력하세요"
-                   th:class="${#fields.hasErrors('nickname')}? 'form-control fieldError' : 'form-control'">
+            <input type="text" th:field="*{nickname}" class="form-control"
+                   th:placeholder="${#messages.msg('HTML.SIGNUP_FORM.NICKNAME_PLACEHOLDER')}"
+                   th:class="${#fields.hasErrors('nickname')}? 'form-control fieldError' : 'form-control'"
+            >
             <p th:if="${#fields.hasErrors('nickname')}" th:errors="*{nickname}">Incorrect data</p>
     
         </div>
         <div class="form-group">
-            <label th:for="name">이름</label>
+            <label th:for="name" th:text="${#messages.msg('HTML.SIGNUP_FORM.NAME_LABEL')}">이름</label>
             
-            <input type="text" th:field="*{name}" class="form-control" placeholder="이름을 입력하세요"
+            <input type="text" th:field="*{name}" class="form-control"
+                   th:placeholder="${#messages.msg('HTML.SIGNUP_FORM.NAME_PLACEHOLDER')}"
                    th:class="${#fields.hasErrors('name')}? 'form-control fieldError' : 'form-control'">
             <p th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Incorrect data</p>
         
         </div>
         <div class="form-group">
-            <label th:for="city">도시</label>
-            <input type="text" th:field="*{address.city}" class="form-control" placeholder="도시를 입력하세요">
+            <label th:for="city" th:text="${#messages.msg('HTML.SIGNUP_FORM.CITY_LABEL')}">도시</label>
+            <input type="text" th:field="*{address.city}" class="form-control"
+                   th:placeholder="${#messages.msg('HTML.SIGNUP_FORM.CITY_PLACEHOLDER')}">
         </div>
         <div class="form-group">
-            <label th:for="street">거리</label>
-            <input type="text" th:field="*{address.street}" class="form-control" placeholder="거리를 입력하세요">
+            <label th:for="street" th:text="${#messages.msg('HTML.SIGNUP_FORM.STREET_LABEL')}">거리</label>
+            <input type="text" th:field="*{address.street}" class="form-control"
+                   th:placeholder="${#messages.msg('HTML.SIGNUP_FORM.STREET_PLACEHOLDER')}">
         </div>
         <div class="form-group">
-            <label th:for="zipcode">우편번호</label>
-            <input type="text" th:field="*{address.zipCode}" class="form-control" placeholder="우편번호를 입력하세요">
+            <label th:for="zipcode" th:text="${#messages.msg('HTML.SIGNUP_FORM.ZIPCODE_LABEL')}">우편번호</label>
+            <input type="text" th:field="*{address.zipCode}" class="form-control"
+                   th:placeholder="${#messages.msg('HTML.SIGNUP_FORM.ZIPCODE_PLACEHOLDER')}">
         </div>
         <button type="submit" class="btn btn-primary">Submit</button>
     </form>

@@ -2,6 +2,7 @@ package com.jpabook.jpashop.i18n;
 
 import java.util.Locale;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,11 +22,15 @@ public class GlobalConfig implements WebMvcConfigurer {
 	 * @return 메세지소스 빈
 	 */
 	@Bean
-	public MessageSource messageSource() {
+	public MessageSource messageSource(
+		@Value("${spring.messages.basename}") String basename,
+		@Value("${spring.messages.encoding}") String encoding,
+		@Value("${spring.messages.cache-duration}") int cacheTime
+ 	) {
 		ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
-		messageSource.setBasename("messages/map");
-		messageSource.setDefaultEncoding("UTF-8");
-		messageSource.setCacheSeconds(10); // 리로드한 파일을 캐싱
+		messageSource.setBasename(basename);
+		messageSource.setDefaultEncoding(encoding);
+		messageSource.setCacheSeconds(cacheTime); // 리로드한 파일을 캐싱
 		log.debug("[CUSTOM BEAN REGISTRY] messageSource");
 		return messageSource;
 	}
