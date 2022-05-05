@@ -2,7 +2,7 @@
 Side Project for Spring & JPA Study
 
 # Class diagram
-![class_diagram](https://user-images.githubusercontent.com/64432366/166738311-eb94c8b7-04e6-432c-8eec-7013d3d299b0.png)
+![class_diagram](https://github.com/Aivyss/Spring_and_JPA/blob/master/docs/class_diagram.png?raw=true)
 
 # Project Specification
 
