@@ -10,7 +10,7 @@ import com.jpabook.jpashop.domain.common.Address;
 import com.jpabook.jpashop.domain.common.DeletedFlag;
 import com.jpabook.jpashop.domain.common.Edits;
 import com.jpabook.jpashop.domain.member.Member;
-import com.jpabook.jpashop.exception.DuplicateRowException;
+import com.jpabook.jpashop.exception.CommonError;
 import com.jpabook.jpashop.interfaces.exceptions.JPAShopError;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -48,8 +48,8 @@ class MemberServiceImplTest {
 		when(memberRepository.findByNickname(eq(memberNickname))).thenReturn(member);
 		
 		// * then
-		assertThatThrownBy(()-> memberService.signUp(member)).isInstanceOf(JPAShopError.class).isInstanceOf(DuplicateRowException.class)
-			.hasMessage("이미 존재하는 회원입니다.");
+		assertThatThrownBy(()-> memberService.signUp(member)).isInstanceOf(JPAShopError.class)
+			.isInstanceOf(CommonError.class);
 	}
 	
 	@Test

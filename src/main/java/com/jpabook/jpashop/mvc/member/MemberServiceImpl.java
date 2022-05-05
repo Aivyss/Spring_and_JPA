@@ -1,7 +1,8 @@
 package com.jpabook.jpashop.mvc.member;
 
 import com.jpabook.jpashop.domain.member.Member;
-import com.jpabook.jpashop.exception.DuplicateRowException;
+import com.jpabook.jpashop.exception.CommonError;
+import com.jpabook.jpashop.exception.ExceptionCase;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -72,7 +73,7 @@ public class MemberServiceImpl implements MemberService {
 	private void findDuplicateMember(Member member) {
 		final Member findMember = memberRepository.findByNickname(member.getNickname());
 		if (findMember != null) {
-			throw new DuplicateRowException("001-001", "이미 존재하는 회원입니다.");
+			throw new CommonError(ExceptionCase.DUPLCIATE_ROW, "001", "EXCEPTION.DUPLICATE_ROW_MEMBER");
 		}
 	}
 }

@@ -5,7 +5,8 @@ import static com.jpabook.jpashop.domain.sequence.Sequences.ITEM_SEQ;
 
 import com.jpabook.jpashop.domain.category.Category;
 import com.jpabook.jpashop.domain.common.Edits;
-import com.jpabook.jpashop.exception.NotEnoughStockException;
+import com.jpabook.jpashop.exception.CommonError;
+import com.jpabook.jpashop.exception.ExceptionCase;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Column;
@@ -82,7 +83,7 @@ public abstract class Item {
 	
 	public void removeStock(int quantity) {
 		if (this.stockQuantity - quantity < 0) {
-			throw new NotEnoughStockException("001", "need more stock");
+			throw new CommonError(ExceptionCase.NOT_ENOUGH_STOCK, "002", "EXCEPTION.NOT_ENOUGH_STOCK");
 		} else {
 			this.stockQuantity -= quantity;
 		}
