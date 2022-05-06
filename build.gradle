@@ -23,12 +23,16 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	/* DTO Validation Checking Library */
 	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-validation', version: '2.6.6'
+	/* spring security */
+//	implementation 'org.springframework.boot:spring-boot-starter-security'
 	/* spring boot JPA */
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	/* SQL 로깅을 더 편리하게 남기기 위한 외부 라이브러리 (sql과 parameter를 합쳐서 보기 위한 것으로 부수적 라이브러리) */
 	implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.8.0'
 	/* template library - thymeleaf */
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+	/* json web token */
+//	implementation 'io.jsonwebtoken:jjwt:0.9.1'
 	/* lombok library */
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
@@ -40,6 +44,8 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	/* test framework (Mockito) */
 	testImplementation 'org.mockito:mockito-core:4.4.0'
+	/* swagger 3 */
+	implementation 'io.springfox:springfox-boot-starter:3.0.0'
 }
 
 tasks.named('test') {

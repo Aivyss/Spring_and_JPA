@@ -13,6 +13,7 @@ public class ItemServiceImpl implements ItemService {
 	private final ItemRepository itemRepository;
 	
 	@Override
+	@Transactional
 	public void save(Item item) {
 		itemRepository.save(item);
 	}

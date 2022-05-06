@@ -1,4 +1,9 @@
 spring:
+    mvc:
+        pathmatch:
+            matching-strategy: ant_path_matcher
+            # swagger3은 ant_path_matcher 방식의 매칭을 지원하나 스프링 2.6.x에서는 ControllerHandler 매칭 전략을
+            # path_pattern_parser 전략으로 변경했기 때문에 이전 전략으로 재적용 해줘야 함.
     messages:
         basename: messages/map
         encoding: UTF-8
@@ -21,3 +26,8 @@ logging:
     level:
 #        org.hibernate.SQL: debug # sql을 로거를 이용해서 찍음, 찍을 로그레벨의 설정
         org.hibernate.type: trace # 쿼리에 넣은 파라미터가 남지 않고 ? 로 입력되기 때문에 따로 로깅할 때 사용
+        
+swagger-doc:
+    app-name: JPA Shop
+    version: 1.0.0
+    description: API document

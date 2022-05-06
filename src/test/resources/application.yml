@@ -6,7 +6,7 @@ spring:
         password:
         driver-class-name: org.h2.Driver
 
-    jpa: # jpa se ttings
+    jpa: # jpa settings
         hibernate:
             ddl-auto: create # application 구동시 ddl을 실행하는 방법에 대한 기술
         properties:

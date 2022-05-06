@@ -46,4 +46,10 @@ public class Edits {
 		this.deleted = deleted;
 		this.editMember = editMember;
 	}
+	
+	public static Edits newEdits(Member member) {
+		LocalDateTime currentTime = LocalDateTime.now();
+		DeletedFlag deleted = DeletedFlag.N;
+		return  new Edits(currentTime, deleted, member);
+	}
 }

@@ -19,14 +19,19 @@ public class Book extends Item {
 	@Column(name = "ISBN")
 	private String isbn;
 	
-	public Book(Long id, String name, int stockQuantity, int price, String author, String isbn, Edits edit) {
+	public Book(Long id, String name, int stockQuantity, int price, String author, String isbn,
+		Edits edit) {
 		super(id, name, stockQuantity, price, edit);
 		this.author = author;
 		this.isbn = isbn;
 	}
 	
 	// * default constructor for JPA
-	public Book() {
+	protected Book() {
+	}
 	
+	public static Book newBook(String name, int stockQuantity, int price, String author,
+		String isbn) {
+		return new Book(null, name, stockQuantity, price, author, isbn, Edits.newEdits(null));
 	}
 }
