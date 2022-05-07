@@ -9,9 +9,9 @@
     <form th:object="${form}" role="form" action="/order/new" method="post">
 
         <div class="form-group">
-            <label for="memberId">주문회원</label>
+            <label for="memberId" th:text="${#messages.msg('HTML.ORDER_FORM.ROWS.MEMBER')}">주문회원</label>
             <select name="memberId" id="memberId" th:class="${memberIdError != null}? 'form-control fieldError' : 'form-control'">
-                <option value="">회원선택</option>
+                <option value="" th:text="${#messages.msg('HTML.ORDER_FORM.OPTIONS.DEFAULT.MEMBER')}">회원선택</option>
                 <option th:each="member : ${form.members}"
                         th:value="${member.id}"
                         th:text="${member.name}" />
@@ -21,9 +21,9 @@
         </div>
 
         <div class="form-group">
-            <label for="itemId">상품명</label>
+            <label for="itemId" th:text="${#messages.msg('HTML.ORDER_FORM.ROWS.ITEM')}">상품명</label>
             <select name="itemId" id="itemId" th:class="${itemIdError != null}? 'form-control fieldError' : 'form-control'">
-                <option value="">상품선택</option>
+                <option value="" th:text="${#messages.msg('HTML.ORDER_FORM.OPTIONS.DEFAULT.ITEM')}">상품선택</option>
                 <option th:each="item : ${form.items}"
                         th:value="${item.id}"
                         th:text="${item.name}" />
@@ -32,8 +32,8 @@
         </div>
 
         <div class="form-group">
-            <label for="count">주문수량</label>
-            <input type="number" name="count" id="count" placeholder="주문 수량을 입력하세요"
+            <label for="count" th:text="${#messages.msg('HTML.ORDER_FORM.ROWS.COUNT')}">주문수량</label>
+            <input type="number" name="count" id="count" th:placeholder="${#messages.msg('HTML.ORDER_FORM.INPUTS.PLACEHOLDER.COUNT')}"
                    th:class="${countError != null}? 'form-control fieldError' : 'form-control'"
             >
             <p th:if="${countError != null}" th:text="*{countError}">Incorrect data</p>
