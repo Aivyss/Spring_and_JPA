@@ -9,6 +9,7 @@ import lombok.Setter;
 
 @Getter @Setter
 public class BookForm {
+	private Long id;
 	@NotEmpty(message="{FORM_INSTANCE.BOOK_FORM.NOT_EMPTY.NAME}")
 	private String name;
 	@Min(value=1, message="{FORM_INSTANCE.BOOK_FORM.NOT_EMPTY.PRICE}")
@@ -21,20 +22,21 @@ public class BookForm {
 	private String isbn;
 	
 	public static Item formToEntity(BookForm form) {
-		return Book.newBook(form.getName(), form.stockQuantity, form.price, form.author, form.isbn);
+		if (form.getId() == null || form.getId() < 1L) {
+			return Book.newBook(form.getName(), form.stockQuantity, form.price, form.author, form.isbn);
+		} else {
+			return Book.newEntityAlreadyExist(form.id, form.name, form.stockQuantity, form.price, form.author, form.isbn);
+		}
 	}
 	
 	public static BookForm entityToForm(Book book) {
-		final String name = book.getName();
-		final String author = book.getAuthor();
-		final int price = book.getPrice();
-		final int stockQuantity = book.getStockQuantity();
-		
 		final BookForm bookForm = new BookForm();
-		bookForm.setName(name);
-		bookForm.setAuthor(author);
-		bookForm.setPrice(price);
-		bookForm.setStockQuantity(stockQuantity);
+		bookForm.author = book.getAuthor();
+		bookForm.name = book.getName();
+		bookForm.price = book.getPrice();
+		bookForm.stockQuantity = book.getStockQuantity();
+		bookForm.isbn = book.getIsbn();
+		bookForm.id = book.getId();
 		
 		return bookForm;
 	}

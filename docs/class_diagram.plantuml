@@ -10,6 +10,9 @@ package aop {
 package filter {
 }
 package interceptor {
+    class $$LocaleChangeInterceptor {
+        paramName: String
+    }
 }
 
 package DTO {
@@ -36,134 +39,152 @@ package DTO {
         + static formToMember(form: MemberForm): Member
         + static memberToForm(member: Member): MemberForm
     }
+
+    class BookForm {
+        - name: String
+        - price: int
+        - stockQuantity: int
+        - author: String
+        - isbn: String
+        + formToEntity(form: BookForm): Item
+        + entityToForm(book: Book): BookForm
+    }
 }
 
 package domain {
-    package Common_domain {
-        class Address {
-            - city: String
-            - street: String
-            - zipCode: String
-        }
-        AddressForm -[dotted]-> Address
+    class Address {
+        - city: String
+        - street: String
+        - zipCode: String
+    }
+    AddressForm -[dotted]-> Address
 
-        class Edits {
-            - inputTime: LocalDateTime
-            - deleted: DeletedFlag
-            - member: Member
-        }
-        Edits --> "1" DeletedFlag
+    class Edits {
+        - inputTime: LocalDateTime
+        - deleted: DeletedFlag
+        - member: Member
+    }
+    Edits --> "1" DeletedFlag
 
-        enum DeletedFlag {
-            Y, N
-        }
+    enum DeletedFlag {
+        Y, N
     }
 
-    package Category_domain {
-        class Category {
-            - id: Long
-            - name: String
-            - edit: Edits
-            - parent: Category
-            - children: List<Category>
-            - items: List<Item>
-        }
-        Category --> Category
+    class Category {
+        - id: Long
+        - name: String
+        - edit: Edits
+        - parent: Category
+        - children: List<Category>
+        - items: List<Item>
+    }
+    Category --> Category
+
+    class Member {
+        - id: Long
+        - name: String
+        - nickname: String
+        - address: Address
+        - edits: Edits
+        - orders: List<Order>
+    }
+    MemberForm --> "1" AddressForm
+    MemberForm -r[dotted]-> Member
+    Member --> "1" Address
+    Edits --> "1" Member
+
+    class Order {
+        - id: Long
+        - orderDate: LocalDateTime
+        - status: OrderStatus
+        - edits: Edits
+        - member: Member
+        - delivery: Delivery
+    }
+    Order --> "1" Member
+    Order --> "1" OrderStatus
+    OrderSearchFilter --> "1" OrderStatus
+
+    enum OrderStatus {
+        ORDER, CANCEL
     }
 
-    package Account_domain {
-        class Member {
-            - id: Long
-            - name: String
-            - nickname: String
-            - address: Address
-            - edits: Edits
-            - orders: List<Order>
-        }
-        MemberForm --> "1" AddressForm
-        MemberForm -r[dotted]-> Member
-        Member --> "1" Address
-        Edits --> "1" Member
+    class OrderItem {
+        - id: Long
+        - item: Item
+        - order: Order
+        - edits: Edits
+        - orderPrice: int
+        - count: int
+    }
+    OrderItem --> "1" Order
+    class Delivery {
+        - id: Long
+        - address: Address
+        - status: DeliveryStatus
+        - edits: Edits
+        - order: Order
+    }
+    Order "1" <--> "1" Delivery
+    Delivery --> "1" DeliveryStatus
+    Delivery --> "1" Address
+
+    enum DeliveryStatus {
+        READY, COMP
     }
 
-    package Orders_domain {
-        class Order {
-            - id: Long
-            - orderDate: LocalDateTime
-            - status: OrderStatus
-            - edits: Edits
-            - member: Member
-            - delivery: Delivery
-        }
-        Order --> "1" Member
-        Order --> "1" OrderStatus
-        OrderSearchFilter --> "1" OrderStatus
+    abstract class Item {
+        - id: Long
+        - name: String
+        - stockQuantity: int
+        - price: int
+        - edits: Edits
+        - categories: List<Category>
 
-        enum OrderStatus {
-            ORDER, CANCEL
-        }
-
-        class OrderItem {
-            - id: Long
-            - item: Item
-            - order: Order
-            - edits: Edits
-            - orderPrice: int
-            - count: int
-        }
-        OrderItem --> "1" Order
+        + addStock(quantity: int): void
+        + removeStock(quantity: int): void
     }
+    OrderItem --> "1" Item
+    Category --> "*" Item
+    BookForm -[dotted]-> Item
 
-    package Delivery_domain {
-        class Delivery {
-            - id: Long
-            - address: Address
-            - status: DeliveryStatus
-            - edits: Edits
-            - order: Order
-        }
-        Order "1" <--> "1" Delivery
-        Delivery --> "1" DeliveryStatus
-        Delivery --> "1" Address
-
-        enum DeliveryStatus {
-            READY, COMP
-        }
+    class Album {
+        - artist: String
+        - etc: String
     }
+    Album --|> Item
 
-    package Items_domain {
-        abstract class Item {
-            - id: Long
-            - name: String
-            - stockQuantity: int
-            - price: int
-            - edits: Edits
-            - categories: List<Category>
-
-            + addStock(quantity: int): void
-            + removeStock(quantity: int): void
-        }
-        OrderItem --> "1" Item
-        Category --> "*" Item
-
-        class Album {
-            - artist: String
-            - etc: String
-        }
-        Album --|> Item
-
-        class Book {
-            - author: String
-            - isbn: String
-        }
-        Book --|> Item
-
-        class Movie {
-            - director: String
-            - actor: String
-        }
-        Movie --|> Item
+    class Book {
+        - author: String
+        - isbn: String
     }
+    Book --|> Item
+    BookForm -[dotted]-> "1" Book
+
+    class Movie {
+        - director: String
+        - actor: String
+    }
+    Movie --|> Item
+}
+
+package ViewTemplate {
+    note top of ViewTemplate
+            뷰템플릿의 $ 한개는
+            디렉토리 구분을 위해서 쓰임탬
+    end note
+
+    interface item$item_list
+    interface item$item_form
+    interface member$signup_form
+    interface member$member_list
+    interface common$error
+    interface main
+
+    MemberController -[dotted]-> main
+    MemberController -[dotted]-> member$signup_form
+    MemberController -[dotted]-> member$member_list
+    MainController -[dotted]-> main
 }
 
 package mvc {
@@ -171,109 +192,99 @@ package mvc {
         + mainView(): main
     }
 
-    package ViewTemplate {
-        note top of ViewTemplate
-             뷰템플릿의 $ 한개는
-             디렉토리 구분을 위해서 쓰임탬
-        end note
-
-        interface member$signup_form
-        interface member$member_list
-        interface common$error
-        interface main
-
-        MemberController -[dotted]-> main
-        MemberController -[dotted]-> member$signup_form
-        MemberController -[dotted]-> member$member_list
-        MainController -[dotted]-> main
+    class MemberController {
+        - memberService: MemberService
+        + viewSignupForm(model: Model): member$signup_form
+        + viewMemberList(model: Model): member$member_list
+        + signup(memberForm: MemberForm, result: BindingResult): main | member$signup_form
     }
-    package mvc_member {
-        class MemberController {
-            - memberService: MemberService
-            + viewSignupForm(model: Model): member$signup_form
-            + viewMemberList(model: Model): member$member_list
-            + signup(memberForm: MemberForm, result: BindingResult): main | member$signup_form
-        }
-        MemberController --> "1" MemberService
+    MemberController --> "1" MemberService
 
-        class MemberRepository {
-            - em: EntityManager
-            + save(member: Member): void
-            + findOne(id: Long): Member
-            + findAll(): List<Member>
-            + findByName(name: String): List<Member>
-            + findByNickname(nickname: String): Member
-        }
+    class ItemController {
+        - itemService: ItemService
+        + viewItemForm(model: Model): item$item_form
+        + viewItemList(model: MOdel): item$item_list
+        + addItem(bookForm: BookForm, result:BindingResult): main | item$item_form
+    }
+    ItemController --> "1" ItemService
+    ItemController -[dotted]-> item$item_form
+    ItemController -[dotted]-> item$item_list
+    ItemController -[dotted]-> main
+    ItemController -[dotted]-> BookForm
 
-        interface MemberService {
-            + signUp(member: Member): Long
-            + findOneMember(id: Long): Member
-            + findAllMembers(): List<Member>
-        }
-
-        class MemberServiceImpl {
-            - memberRepository: MemberRepository
-            + signUp(member: Member): Long
-            + findOneMember(id: Long): Member
-            + findAllMembers(): List<Member>
-            - findDuplicateMember(member: Member): void
-        }
-        MemberServiceImpl --|> MemberService
-        MemberServiceImpl --> "1" MemberRepository
+    class MemberRepository {
+        - em: EntityManager
+        + save(member: Member): void
+        + findOne(id: Long): Member
+        + findAll(): List<Member>
+        + findByName(name: String): List<Member>
+        + findByNickname(nickname: String): Member
     }
 
-    package mvc_item {
-        class ItemRepository {
-            - em: EntityManager
-            + save(item: Item): void
-            + findOne(id: Long): Item
-            + findAll(): List<Item>
-        }
-
-        interface ItemService {
-            + save(item: Item): void
-            + findItems(): List<Item>
-            + findOne(id: Long): Item
-        }
-
-        class ItemServiceImpl {
-            - itemRepository: ItemRepository
-            + save(item: Item): void
-            + findItems(): List<Item>
-            + findOne(id: Long): Item
-        }
-        ItemServiceImpl --|>ItemService
-        ItemServiceImpl --> "1" ItemRepository
+    interface MemberService {
+        + signUp(member: Member): Long
+        + findOneMember(id: Long): Member
+        + findAllMembers(): List<Member>
     }
 
-    package mvc_order {
-        class OrderRepository {
-            + save(order: Order)
-            + fineOne(id: Long): Order
-            + searchOrders(filter: OrderSearchFilter): List<Order>
-        }
-        OrderRepository -[dotted]-> OrderSearchFilter
-
-        interface OrderService {
-            + createOrder(memberId: Long, itemId: Long, count: int)
-            + cancelOrder(orderId: Long)
-            + searchOrders(filter: OrderSearchFilter)
-        }
-        OrderService -[dotted]-> OrderSearchFilter
-
-        class OrderServiceImpl {
-            - orderRepository: OrderRepository
-            - memberRepository: MemberRepository
-            - itemRepository: ItemRepository
-            + createOrder(memberId: Long, itemId: Long, count: int)
-            + cancelOrder(orderId: Long)
-            + searchOrders(filter: OrderSearchFilter)
-        }
-        OrderServiceImpl --|> OrderService
-        OrderServiceImpl --> "1" OrderRepository
-        OrderServiceImpl --> "1" MemberRepository
-        OrderServiceImpl -d-> "1" ItemRepository
+    class MemberServiceImpl {
+        - memberRepository: MemberRepository
+        + signUp(member: Member): Long
+        + findOneMember(id: Long): Member
+        + findAllMembers(): List<Member>
+        - findDuplicateMember(member: Member): void
     }
+    MemberServiceImpl --|> MemberService
+    MemberServiceImpl --> "1" MemberRepository
+
+    class ItemRepository {
+        - em: EntityManager
+        + save(item: Item): void
+        + findOne(id: Long): Item
+        + findAll(): List<Item>
+    }
+
+    interface ItemService {
+        + save(item: Item): void
+        + findItems(): List<Item>
+        + findOne(id: Long): Item
+    }
+
+    class ItemServiceImpl {
+        - itemRepository: ItemRepository
+        + save(item: Item): void
+        + findItems(): List<Item>
+        + findOne(id: Long): Item
+    }
+    ItemServiceImpl --|>ItemService
+    ItemServiceImpl --> "1" ItemRepository
+
+    class OrderRepository {
+        + save(order: Order)
+        + fineOne(id: Long): Order
+        + searchOrders(filter: OrderSearchFilter): List<Order>
+    }
+    OrderRepository -[dotted]-> OrderSearchFilter
+
+    interface OrderService {
+        + createOrder(memberId: Long, itemId: Long, count: int)
+        + cancelOrder(orderId: Long)
+        + searchOrders(filter: OrderSearchFilter)
+    }
+    OrderService -[dotted]-> OrderSearchFilter
+
+    class OrderServiceImpl {
+        - orderRepository: OrderRepository
+        - memberRepository: MemberRepository
+        - itemRepository: ItemRepository
+        + createOrder(memberId: Long, itemId: Long, count: int)
+        + cancelOrder(orderId: Long)
+        + searchOrders(filter: OrderSearchFilter)
+    }
+    OrderServiceImpl --|> OrderService
+    OrderServiceImpl --> "1" OrderRepository
+    OrderServiceImpl --> "1" MemberRepository
+    OrderServiceImpl -d-> "1" ItemRepository
 }
 
 package i18n {
@@ -336,12 +347,17 @@ package Exception {
     ExceptionController --> "1" MessageService
 }
 
+package swagger {
+    class SwaggerConfig {
+        + apiV1(): Docket
+        + apiInfo(): ApiInfo
+    }
+    SwaggerConfig -[dotted]-> Docket
+    SwaggerConfig -[dotted]-> ApiInfo
+
+    class Docket
+    class ApiInfo
+}
+
 'package positioning
-domain -[hidden]-> mvc
-mvc_member -u[hidden]-> ViewTemplate
-ViewTemplate -u[hidden]-> mvc_order
-LoggingAspect -u[hidden]---> MessageServiceImpl
-JPAShopError -d[hidden]------>MemberForm
-i18n -u[hidden]> aop
-aop -u[hidden]-> domain
 @enduml

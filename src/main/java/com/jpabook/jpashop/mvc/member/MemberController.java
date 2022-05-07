@@ -32,7 +32,7 @@ public class MemberController {
 		httpMethod = "GET",
 		value = "멤버 리스트 페이지 렌더링",
 		notes = "렌더링 할 뷰 템플릿 매핑",
-		tags= "[render] member list page"
+		tags=  {"render"}
 	)
 	public String viewMemberList(Model model) {
 		final List<Member> memberEntities = memberService.findAllMembers();
@@ -44,13 +44,13 @@ public class MemberController {
 		return "members/member-list";
 	}
 	
-	@GetMapping("/new")
 	@ApiOperation(
 		httpMethod = "GET",
 		value = "멤버 들록폼 페이지 렌더링",
 		notes = "렌더링 할 뷰 템플릿 매핑",
-		tags= "[render] member signup form page"
+		tags= {"render"}
 	)
+	@GetMapping("/new")
 	public String viewSignupForm(Model model) {
 		// * give form
 		model.addAttribute("memberForm", new MemberForm());
@@ -66,7 +66,7 @@ public class MemberController {
 		httpMethod = "POST",
 		value = "멤버 등록 비즈니스 로직수행 메소드",
 		notes = "멤버 등록 비즈니스 로직 수행 후 성공시 메인 페이리 렌더링으로 리다이렉트",
-		tags= "[business] 멤버등록"
+		tags= {"business_save", "Member_entity"}
 	)
  	public String signup(@Valid MemberForm signupForm, BindingResult result) {
 		// * check validation

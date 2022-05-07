@@ -20,7 +20,7 @@ public class ItemRepository {
 		if (item.getId() == null) {
 			em.persist(item);
 		} else {
-			em.merge(item);
+			em.merge(item); // 실무에서 merge를 쓰는 것은 굉장히 위험하다. dirty checking을 이용할 것. 연습상 이렇게 한 것임
 		}
 	}
 	

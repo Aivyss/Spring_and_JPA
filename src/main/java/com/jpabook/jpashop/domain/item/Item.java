@@ -42,22 +42,22 @@ public abstract class Item {
 	@Id
 	@GeneratedValue(generator = ITEM_SEQ_GEN, strategy = GenerationType.SEQUENCE)
 	@Column(name = "ITEM_ID")
-	private Long id;
+	protected Long id;
 	
 	@Column(name = "ITEM_NAME")
-	private String name;
+	protected String name;
 	
 	@Column(name = "STOCK_QUANTITY")
-	private int stockQuantity;
+	protected int stockQuantity;
 	
 	@Column(name = "PRICE")
-	private int price;
+	protected int price;
 	
 	@Embedded
-	private Edits edits;
+	protected Edits edits;
 	
 	@ManyToMany(mappedBy = "items")
-	private List<Category> categories = new ArrayList<>();
+	protected List<Category> categories = new ArrayList<>();
 	
 	public Item(Long id, String name, int stockQuantity, int price, Edits edit) {
 		this.id = id;

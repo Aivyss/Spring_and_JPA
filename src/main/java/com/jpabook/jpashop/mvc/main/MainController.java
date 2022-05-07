@@ -20,7 +20,7 @@ public class MainController {
 		httpMethod = "GET",
 		value = "메인 페이지 렌더링",
 		notes = "메인 페이지 템플레이트를 매핑하는 컨트롤러 메소드",
-		tags = "[render] main page"
+		tags = {"render"}
 	)
 	public String mainView(Model model) {
 		return "main";
@@ -31,7 +31,7 @@ public class MainController {
 		httpMethod = "GET",
 		value = "에러 페이지 렌더링",
 		notes = "익셉션 컨트롤러에 의해 리다이렉트 되는 곳. 에러원인과 메세지가 다국어 처리 되어 페이지에 보여짐",
-		tags = "[render] error page"
+		tags = {"render"}
 	)
 	public String renderErrorPage() {
 		return "common/error";
