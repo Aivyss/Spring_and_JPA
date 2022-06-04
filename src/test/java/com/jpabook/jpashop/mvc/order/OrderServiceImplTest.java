@@ -14,33 +14,39 @@ import com.jpabook.jpashop.domain.order.OrderStatus;
 import com.jpabook.jpashop.dto.OrderSearchFilter;
 import com.jpabook.jpashop.exception.CommonError;
 import com.jpabook.jpashop.interfaces.exceptions.JPAShopError;
-import com.jpabook.jpashop.mvc.item.ItemRepository;
-import com.jpabook.jpashop.mvc.member.MemberRepository;
+import com.jpabook.jpashop.repository.ItemRepository;
+import com.jpabook.jpashop.repository.MemberRepository;
+import com.jpabook.jpashop.repository.OrderRepository;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import javax.persistence.EntityManager;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
  * OrderService는 단위별로 쪼개지 않았다. DB에 대해서 직접 로직에 의해서 삽입되는지 테스트하기 위해 통합테스트로 진행함.
  */
 @SpringBootTest
+@ActiveProfiles("test")
 @Transactional(readOnly = true)
 public class OrderServiceImplTest {
 	
 	@Autowired
-	private OrderServiceImpl orderService;
+	private OrderService orderService;
 	@Autowired
 	private OrderRepository orderRepository;
 	@Autowired
 	private MemberRepository memberRepository;
 	@Autowired
 	private ItemRepository itemRepository;
+	@Autowired
+	private EntityManager em;
 	
 	@Test
 	@DisplayName("상품 주문")
@@ -55,13 +61,13 @@ public class OrderServiceImplTest {
 		Book book = getBook(member, stockQuantity);
 		
 		memberRepository.save(member);
-		itemRepository.save(book);
+		itemRepository.persistOrMerge(book);
 		
 		// * when
 		final Long id = orderService.createOrder(member.getId(), book.getId(), count);
 		
 		// * then
-		final Order actualOrder = orderRepository.findOne(id);
+		final Order actualOrder = orderRepository.findById(id).orElseThrow();
 		assertThat(id).isGreaterThan(0L);
 		assertThat(actualOrder.getStatus()).isEqualTo(OrderStatus.ORDER);
 		assertThat(actualOrder.getDelivery().getStatus()).isEqualTo(DeliveryStatus.READY);
@@ -86,11 +92,11 @@ public class OrderServiceImplTest {
 		Book book = getBook(member, stockQuantity);
 		
 		memberRepository.save(member);
-		itemRepository.save(book);
+		itemRepository.persistOrMerge(book);
 		final Long id = orderService.createOrder(member.getId(), book.getId(), count);
 		
 		// * when
-		final Order order = orderRepository.findOne(id);
+		final Order order = orderRepository.findById(id).orElseThrow();
 		order.cancel();
 		
 		// * then
@@ -111,10 +117,15 @@ public class OrderServiceImplTest {
 		Book book = getBook(member, totalCount);
 		
 		memberRepository.save(member);
-		itemRepository.save(book);
+		itemRepository.persistOrMerge(book);
+		try {
+			orderService.createOrder(member.getId(), book.getId(), 10000);
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
 		assertThatThrownBy(
 			() -> orderService.createOrder(member.getId(), book.getId(), 10000)
-		).isInstanceOf(JPAShopError.class).isInstanceOf(CommonError.class).hasMessage("The stock of the goods is insufficient.");
+		).isInstanceOf(JPAShopError.class).isInstanceOf(CommonError.class);
 	}
 	
 	@Test
@@ -125,10 +136,10 @@ public class OrderServiceImplTest {
 		final Member admin = getMember("admin", "admin");
 		memberRepository.save(admin);
 		final Book book = getBook(admin, 10000);
-		itemRepository.save(book);
+		itemRepository.persistOrMerge(book);
 		
 		// * given
-		final List<String> memberNames = Arrays.asList("ab2", "", null, "tst", "hbeia");
+		final List<String> memberNames = Arrays.asList("ab2", "tst", "hbeia");
 		final List<Member> members = new ArrayList<>();
 		final List<Order> orders = new ArrayList<>();
 		int i = 0;
@@ -140,8 +151,8 @@ public class OrderServiceImplTest {
 			memberRepository.save(member);
 			i += 1;
 		}
-		members.forEach(member -> orders.add(Order.newOrder(member)));
-		orders.forEach(order -> orderRepository.save(order));
+		members.forEach(member -> orders.add(Order.create(member)));
+		orderRepository.saveAll(orders);
 		
 		final List<OrderSearchFilter> filters = new ArrayList<>();
 		memberNames.forEach(name -> {
@@ -158,11 +169,15 @@ public class OrderServiceImplTest {
 			filters.add(filter2);
 			filters.add(filter3);
 		});
+		em.flush();
 		
 		// * when, then
 		filters.forEach(filter -> {
 			final List<Order> actualOrders = orderService.searchOrders(filter);
-			actualOrders.forEach(actualOrder -> assertThat(orders.contains(actualOrder)).isTrue());
+			actualOrders.forEach(actualOrder -> {
+				final boolean contains = orders.contains(actualOrder);
+				assertThat(contains).isTrue();
+			});
 		});
 	}
 	

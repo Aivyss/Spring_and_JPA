@@ -18,11 +18,14 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
 @SequenceGenerator(name = MEM_SEQ_GEN, sequenceName = MEM_SEQ, initialValue = 1, allocationSize = 100)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @SuppressWarnings({"JpaDataSourceORMInspection", "DefaultAnnotationParam", "unused",
 	"FieldMayBeFinal"})
 public class Member {
@@ -47,9 +50,6 @@ public class Member {
 	@OneToMany(mappedBy = "member") // 호스트 클래스의 필드변수명
 	private List<Order> orders = new ArrayList<>();
 	
-	protected Member() {
-	}
-	
 	public Member(Long id, String name, String nickname,
 		Address address, Edits edits) {
 		this.id = id;
@@ -59,7 +59,13 @@ public class Member {
 		this.edits = edits;
 	}
 	
-	public static Member newMember(String name, String nickname, Address address) {
+	public void update(String name, Address address) {
+		this.name = name;
+		this.address = address;
+		this.edits = Edits.newEdits(this);
+	}
+	
+	public static Member create(String name, String nickname, Address address) {
 		return new Member(null, name, nickname, address,
 			new Edits(LocalDateTime.now(), DeletedFlag.N, null));
 	}

@@ -1,13 +1,17 @@
 package com.jpabook.jpashop.mvc.order;
 
+import static com.jpabook.jpashop.exception.ExceptionCase.NOT_FOUND_DATA;
+
 import com.jpabook.jpashop.domain.delivery.Delivery;
 import com.jpabook.jpashop.domain.item.Item;
 import com.jpabook.jpashop.domain.member.Member;
 import com.jpabook.jpashop.domain.order.Order;
 import com.jpabook.jpashop.domain.order.OrderItem;
 import com.jpabook.jpashop.dto.OrderSearchFilter;
-import com.jpabook.jpashop.mvc.item.ItemRepository;
-import com.jpabook.jpashop.mvc.member.MemberRepository;
+import com.jpabook.jpashop.exception.ExceptionSupplierUtils;
+import com.jpabook.jpashop.repository.ItemRepository;
+import com.jpabook.jpashop.repository.MemberRepository;
+import com.jpabook.jpashop.repository.OrderRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,15 +24,16 @@ public class OrderServiceImpl implements OrderService {
 	private final OrderRepository orderRepository;
 	private final MemberRepository memberRepository;
 	private final ItemRepository itemRepository;
+	private final ExceptionSupplierUtils exceptions;
 	
 	@Override
 	@Transactional
 	public Long createOrder(Long memberId, Long itemId, int count) {
-		final Member member = memberRepository.findOne(memberId);
-		final Item item = itemRepository.findOne(itemId);
-		final Delivery delivery = Delivery.newDelivery(member, null);
-		final OrderItem orderItem = OrderItem.newOrderItem(item, null, member, count);
-		final Order order = Order.newOrder(member);
+		final Member member = memberRepository.findById(memberId).orElseThrow();
+		final Item item = itemRepository.findById(itemId).orElseThrow();
+		final Delivery delivery = Delivery.create(member, null);
+		final OrderItem orderItem = OrderItem.create(item, null, member, count);
+		final Order order = Order.create(member);
 		order.addOrderItem(orderItem); // 양방향 연관관계 때문에 필요
 		order.setDelivery(delivery); // 양방향 연관관계 때문에 필요
 		
@@ -48,7 +53,8 @@ public class OrderServiceImpl implements OrderService {
 	@Override
 	@Transactional
 	public void cancelOrder(Long orderId) {
-		final Order order = orderRepository.findOne(orderId);
+		final Order order = orderRepository.findById(orderId)
+			.orElseThrow(exceptions.getExceptionSupplier(NOT_FOUND_DATA));
 		order.cancel(); // due to dirty check
 	}
 	

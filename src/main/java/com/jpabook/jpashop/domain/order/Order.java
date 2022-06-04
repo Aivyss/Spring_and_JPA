@@ -109,7 +109,7 @@ public class Order {
 	}
 	
 	// * simple business logics
-	public static Order newOrder(Member member) {
+	public static Order create(Member member) {
 		final LocalDateTime currentTime = LocalDateTime.now();
 		return new Order(
 			null,

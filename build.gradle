@@ -1,6 +1,14 @@
+buildscript {
+	ext {
+		queryDslVersion = "5.0.0"
+	}
+}
+
 plugins {
-	id 'org.springframework.boot' version '2.6.6'
+	id 'org.springframework.boot' version '2.6.7'
 	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+	/* query dsl 플러그인 */
+	id "com.ewerk.gradle.plugins.querydsl" version "1.0.10"
 	id 'java'
 }
 
@@ -8,17 +16,14 @@ group = 'com.jpabook'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '17'
 
-configurations {
-	compileOnly {
-		extendsFrom annotationProcessor
-	}
-}
-
 repositories {
 	mavenCentral()
 }
 
 dependencies {
+	/* QueryDSL */
+	implementation 'com.querydsl:querydsl-jpa'
+	implementation 'com.querydsl:querydsl-apt' // gradle 5버전에선 이게 없으면 안된다.
 	/* spring boot web environment */
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	/* DTO Validation Checking Library */
@@ -51,3 +56,28 @@ dependencies {
 tasks.named('test') {
 	useJUnitPlatform()
 }
+
+/* Query DSL pre compile process : START */
+def querydslDir = "$buildDir/generated/querydsl"
+
+querydsl {
+	library = "com.querydsl:querydsl-apt" // gradle 5버전에선 이게 없으면 안된다.
+	jpa = true
+	querydslSourcesDir = querydslDir
+}
+
+sourceSets {
+	main.java.srcDir querydslDir
+}
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+	querydsl.extendsFrom compileClasspath
+}
+
+compileQuerydsl {
+	options.annotationProcessorPath = configurations.querydsl
+}
+/* Query DSL pre compile process : END */

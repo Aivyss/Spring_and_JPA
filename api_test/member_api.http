@@ -1,0 +1,30 @@
+### member create api
+POST {{member_api_url_prefix}}
+Content-Type: application/json
+
+{
+    "name": "user_name",
+    "nickname": "user_nickname",
+    "address": {
+        "city": "city",
+        "street": "street",
+        "zipCode": "zipcode"
+    }
+}
+
+### member update api
+PUT {{member_api_url_prefix}}/1
+Content-Type: application/json
+
+{
+    "name": "change_user_name",
+    "address": {
+        "city": "chagne_city",
+        "street": "street",
+        "zipCode": "zipcode"
+    }
+}
+
+### get members api
+GET {{member_api_url_prefix}}
+Content-Type: application/json

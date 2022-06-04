@@ -5,16 +5,16 @@ import com.jpabook.jpashop.interfaces.exceptions.JPAShopError;
 
 public class CommonError extends RuntimeException implements JPAShopError {
 	private final ExceptionCase exceptionCase;
-	private String errorCode;
-	private String messageId;
+	private final String errorCode;
+	private final String messageId;
 	private String errorMessage;
 	private String[] args = new String[]{};
 	
-	public CommonError(ExceptionCase exceptionCase, String errorCode, String messageId, String... args) {
+	public CommonError(ExceptionCase exceptionCase, String... args) {
 		super();
 		this.exceptionCase = exceptionCase;
-		this.errorCode = errorCode;
-		this.messageId = messageId;
+		this.errorCode = exceptionCase.getErrorCode();
+		this.messageId = exceptionCase.getMessageId();
 		this.args = args;
 	}
 	

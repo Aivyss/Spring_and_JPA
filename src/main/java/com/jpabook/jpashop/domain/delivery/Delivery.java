@@ -22,7 +22,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import lombok.Getter;
-import lombok.Setter;
 
 @Entity
 @Getter
@@ -60,7 +59,7 @@ public class Delivery {
 		this.order = order;
 	}
 	
-	public static Delivery newDelivery(Member member, Order order) {
+	public static Delivery create(Member member, Order order) {
 		return new Delivery(
 			null,
 			member.getAddress(),

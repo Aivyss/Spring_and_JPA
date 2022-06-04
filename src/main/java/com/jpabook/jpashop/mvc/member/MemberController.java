@@ -74,7 +74,7 @@ public class MemberController {
 			return "members/signup-form";
 		}
 		
-		// * DTO -> Entity & save
+		// * DTO -> Entity & persistOrMerge
 		final Member member = MemberForm.formToMember(signupForm);
 		memberService.signUp(member);
 		

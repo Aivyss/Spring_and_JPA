@@ -10,8 +10,8 @@ public class AddressForm {
 	private String street;
 	private String zipCode;
 	
-	public static Address formToEntity(AddressForm form) {
-		return new Address(form.getCity(), form.getStreet(), form.getZipCode());
+	public Address formToEntity() {
+		return new Address(getCity(), getStreet(), getZipCode());
 	}
 	
 	public static AddressForm entityToForm(Address address) {

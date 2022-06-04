@@ -6,6 +6,7 @@ import com.jpabook.jpashop.domain.common.Address;
 import com.jpabook.jpashop.domain.common.DeletedFlag;
 import com.jpabook.jpashop.domain.common.Edits;
 import com.jpabook.jpashop.domain.member.Member;
+import com.jpabook.jpashop.repository.MemberRepository;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,10 +15,12 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 @SuppressWarnings("RedundantThrows")
 @SpringBootTest
+@ActiveProfiles("test")
 @Transactional
 class MemberRepositoryTest {
 	@Autowired
@@ -38,8 +41,8 @@ class MemberRepositoryTest {
 		);
 		
 		// * when
-		final Long id = memberRepository.save(member);
-		final Member findMember = memberRepository.findOne(id);
+		final Long id = memberRepository.save(member).getId();
+		final Member findMember = memberRepository.findById(id).orElseThrow();
 		
 		// * then
 		assertThat(id).isGreaterThan(0L);

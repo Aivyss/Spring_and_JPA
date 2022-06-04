@@ -60,7 +60,7 @@ public class OrderItem {
 	
 	
 	// * create new OrderItem
-	public static OrderItem newOrderItem(Item item, Order order, Member member, int count) {
+	public static OrderItem create(Item item, Order order, Member member, int count) {
 		item.removeStock(count);
 		
 		return new OrderItem(

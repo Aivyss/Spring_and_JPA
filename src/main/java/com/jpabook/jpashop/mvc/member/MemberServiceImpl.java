@@ -1,10 +1,14 @@
 package com.jpabook.jpashop.mvc.member;
 
+import static com.jpabook.jpashop.exception.ExceptionCase.DUPLICATE_ROW;
+import static com.jpabook.jpashop.exception.ExceptionCase.NOT_FOUND_DATA;
+
+import com.jpabook.jpashop.domain.common.Address;
 import com.jpabook.jpashop.domain.member.Member;
-import com.jpabook.jpashop.exception.CommonError;
-import com.jpabook.jpashop.exception.ExceptionCase;
+import com.jpabook.jpashop.exception.ExceptionSupplierUtils;
+import com.jpabook.jpashop.repository.MemberRepository;
 import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,22 +21,11 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Service
 @Transactional(readOnly = true)
+@RequiredArgsConstructor
 public class MemberServiceImpl implements MemberService {
 	
 	private final MemberRepository memberRepository;
-	
-	@Autowired
-	public MemberServiceImpl(MemberRepository memberRepository) {
-		this.memberRepository = memberRepository;
-		/*
-			lombok의 @RequiredArgsConstructor를 이용하면 단일 생성자일 때
-			@Autowired 없이도 dependency injection를 수행한다는 스프링의 기본 처리과정에 의해서
-			생성자 자체를 정의해 줄 필요가 없다.
-			
-			그러나 명시적으로 이 부분은 코드로 나타내는 것을 선호하므로 직접 컨스트럭터를 정의하고
-			@Autowired를 이용하였다.
-		 */
-	}
+	private final ExceptionSupplierUtils exceptions;
 	
 	/**
 	 *  <ul>
@@ -47,7 +40,14 @@ public class MemberServiceImpl implements MemberService {
 	@Transactional // 읽기가 아닌 write 작업이 들어가므로 annotation override
 	public Long signUp(Member member) {
 		findDuplicateMember(member);
-		return memberRepository.save(member);
+		return memberRepository.save(member).getId();
+	}
+	
+	@Override
+	@Transactional
+	public void updateMember(long memberId, String name, Address address) {
+		final Member member = memberRepository.findById(memberId).orElseThrow();
+		member.update(name, address);
 	}
 	
 	/**
@@ -57,7 +57,8 @@ public class MemberServiceImpl implements MemberService {
 	 */
 	@Override
 	public Member findOneMember(Long memberId) {
-		return memberRepository.findOne(memberId);
+		return memberRepository.findById(memberId)
+			.orElseThrow(exceptions.getExceptionSupplier(NOT_FOUND_DATA));
 	}
 	
 	/**
@@ -73,7 +74,7 @@ public class MemberServiceImpl implements MemberService {
 	private void findDuplicateMember(Member member) {
 		final Member findMember = memberRepository.findByNickname(member.getNickname());
 		if (findMember != null) {
-			throw new CommonError(ExceptionCase.DUPLICATE_ROW, "001", "EXCEPTION.DUPLICATE_ROW_MEMBER");
+			throw exceptions.getExceptionInstance(DUPLICATE_ROW);
 		}
 	}
 }

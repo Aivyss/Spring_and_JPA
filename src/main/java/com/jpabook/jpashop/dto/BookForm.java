@@ -23,7 +23,7 @@ public class BookForm {
 	
 	public static Item formToEntity(BookForm form) {
 		if (form.getId() == null || form.getId() < 1L) {
-			return Book.newBook(form.getName(), form.stockQuantity, form.price, form.author, form.isbn);
+			return Book.create(form.getName(), form.stockQuantity, form.price, form.author, form.isbn);
 		} else {
 			return Book.newEntityAlreadyExist(form.id, form.name, form.stockQuantity, form.price, form.author, form.isbn);
 		}

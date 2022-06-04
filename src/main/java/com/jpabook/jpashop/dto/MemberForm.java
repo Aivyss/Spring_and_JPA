@@ -17,7 +17,7 @@ public class MemberForm {
 	
 	public static Member formToMember(MemberForm form) {
 		final AddressForm addressForm = form.getAddress();
-		return Member.newMember(form.getName(), form.getNickname(), AddressForm.formToEntity(addressForm));
+		return Member.create(form.getName(), form.getNickname(), addressForm.formToEntity());
 	}
 	
 	public static MemberForm memberToForm(Member member) {

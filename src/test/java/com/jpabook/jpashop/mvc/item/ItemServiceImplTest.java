@@ -7,7 +7,10 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import com.jpabook.jpashop.domain.item.Item;
+import com.jpabook.jpashop.exception.ExceptionSupplierUtils;
+import com.jpabook.jpashop.repository.ItemRepository;
 import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,6 +23,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 public class ItemServiceImplTest {
 	@Mock
 	private ItemRepository repository;
+	@Mock
+	private ExceptionSupplierUtils exceptions;
 	
 	@InjectMocks
 	private ItemServiceImpl service;
@@ -31,7 +36,7 @@ public class ItemServiceImplTest {
 		final Item mock = mock(Item.class);
 		
 		// * set stubs
-		doNothing().when(repository).save(mock);
+		doNothing().when(repository).persistOrMerge(mock);
 		
 		// * when
 		service.save(mock);
@@ -60,7 +65,7 @@ public class ItemServiceImplTest {
 		
 		// * set sutbs
 		Item expected = mock(Item.class);
-		when(repository.findOne(eq(id))).thenReturn(expected);
+		when(repository.findById(eq(id))).thenReturn(Optional.ofNullable(expected));
 	    
 	    // * when
 		final Item actual = service.findOne(id);

@@ -83,7 +83,7 @@ public abstract class Item {
 	
 	public void removeStock(int quantity) {
 		if (this.stockQuantity - quantity < 0) {
-			throw new CommonError(ExceptionCase.NOT_ENOUGH_STOCK, "002", "EXCEPTION.NOT_ENOUGH_STOCK");
+			throw new CommonError(ExceptionCase.NOT_ENOUGH_STOCK);
 		} else {
 			this.stockQuantity -= quantity;
 		}

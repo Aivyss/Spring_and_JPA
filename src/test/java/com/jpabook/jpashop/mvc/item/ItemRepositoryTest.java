@@ -10,7 +10,8 @@ import com.jpabook.jpashop.domain.item.impl.Album;
 import com.jpabook.jpashop.domain.item.impl.Book;
 import com.jpabook.jpashop.domain.item.impl.Movie;
 import com.jpabook.jpashop.domain.member.Member;
-import com.jpabook.jpashop.mvc.member.MemberRepository;
+import com.jpabook.jpashop.repository.MemberRepository;
+import com.jpabook.jpashop.repository.ItemRepository;
 import java.time.LocalDateTime;
 import java.util.List;
 import javax.transaction.Transactional;
@@ -18,8 +19,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest
+@ActiveProfiles("test")
 @Transactional
 public class ItemRepositoryTest {
 	
@@ -57,13 +60,13 @@ public class ItemRepositoryTest {
 		
 		// * when
 		memberRepository.save(member);
-		itemRepository.save(album);
-		itemRepository.save(book);
-		itemRepository.save(movie);
+		itemRepository.persistOrMerge(album);
+		itemRepository.persistOrMerge(book);
+		itemRepository.persistOrMerge(movie);
 		
-		final Item actualAlbum = itemRepository.findOne(album.getId());
-		final Item actualBook = itemRepository.findOne(book.getId());
-		final Item actualMovie = itemRepository.findOne(movie.getId());
+		final Item actualAlbum = itemRepository.findById(album.getId()).orElseThrow();
+		final Item actualBook = itemRepository.findById(book.getId()).orElseThrow();
+		final Item actualMovie = itemRepository.findById(movie.getId()).orElseThrow();
 		
 		// * then
 		assertThat(member.getId()).isGreaterThan(0L);
@@ -103,15 +106,14 @@ public class ItemRepositoryTest {
 		);
 		
 		memberRepository.save(member);
-		itemRepository.save(album);
-		itemRepository.save(book);
-		itemRepository.save(movie);
+		itemRepository.persistOrMerge(album);
+		itemRepository.persistOrMerge(book);
+		itemRepository.persistOrMerge(movie);
 		
 		// * when
 		final List<Item> all = itemRepository.findAll();
 		
 		// * then
-		assertThat(all.size()).isEqualTo(3);
 		assertThat(all.contains(album)).isTrue();
 		assertThat(all.contains(book)).isTrue();
 		assertThat(all.contains(movie)).isTrue();

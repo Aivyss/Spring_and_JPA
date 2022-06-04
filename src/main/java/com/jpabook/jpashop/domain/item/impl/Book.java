@@ -32,7 +32,7 @@ public class Book extends Item {
 	protected Book() {
 	}
 	
-	public static Book newBook(String name, int stockQuantity, int price, String author,
+	public static Book create(String name, int stockQuantity, int price, String author,
 		String isbn) {
 		return new Book(null, name, stockQuantity, price, author, isbn, Edits.newEdits(null));
 	}

@@ -1,4 +1,4 @@
-package com.jpabook.jpashop.aop;
+package com.jpabook.jpashop.api.aop;
 
 import java.lang.reflect.Method;
 import lombok.extern.slf4j.Slf4j;

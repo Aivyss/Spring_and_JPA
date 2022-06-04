@@ -1,5 +1,6 @@
 package com.jpabook.jpashop.mvc.member;
 
+import static com.jpabook.jpashop.exception.ExceptionCase.DUPLICATE_ROW;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.eq;
@@ -11,9 +12,12 @@ import com.jpabook.jpashop.domain.common.DeletedFlag;
 import com.jpabook.jpashop.domain.common.Edits;
 import com.jpabook.jpashop.domain.member.Member;
 import com.jpabook.jpashop.exception.CommonError;
+import com.jpabook.jpashop.exception.ExceptionSupplierUtils;
 import com.jpabook.jpashop.interfaces.exceptions.JPAShopError;
+import com.jpabook.jpashop.repository.MemberRepository;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,6 +30,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class MemberServiceImplTest {
 	@Mock
 	private MemberRepository memberRepository;
+	@Mock
+	private ExceptionSupplierUtils exceptions;
 	
 	@InjectMocks
 	private MemberServiceImpl memberService;
@@ -46,6 +52,7 @@ class MemberServiceImplTest {
 		
 		// * set stubs
 		when(memberRepository.findByNickname(eq(memberNickname))).thenReturn(member);
+		when(exceptions.getExceptionInstance(DUPLICATE_ROW)).thenReturn(new CommonError(DUPLICATE_ROW));
 		
 		// * then
 		assertThatThrownBy(()-> memberService.signUp(member)).isInstanceOf(JPAShopError.class)
@@ -56,10 +63,11 @@ class MemberServiceImplTest {
 	@DisplayName("정상 회원가입 케이스")
 	public void testSaveNormalCase() throws Exception {
 		// * given
+		Long expectedId = 1L;
 		String memberName = "memberA";
 		String memberNickname = "nicknameA";
 		Member member = new Member(
-			null,
+			expectedId,
 			memberName,
 			memberNickname,
 			new Address("city", "street", "10-1010"),
@@ -67,8 +75,7 @@ class MemberServiceImplTest {
 		);
 		
 		// * set stubs
-		Long expectedId = 1L;
-		when(memberRepository.save(eq(member))).thenReturn(expectedId);
+		when(memberRepository.save(eq(member))).thenReturn(member);
 		when(memberRepository.findByNickname(eq(memberNickname))).thenReturn(null);
 		
 		// * when
@@ -86,7 +93,7 @@ class MemberServiceImplTest {
 		
 		// * set stubs
 		final Member expectedMember = mock(Member.class);
-		when(memberRepository.findOne(eq(memberId))).thenReturn(expectedMember);
+		when(memberRepository.findById(eq(memberId))).thenReturn(Optional.ofNullable(expectedMember));
 		
 	    // * when
 		final Member findMember = memberService.findOneMember(memberId);
