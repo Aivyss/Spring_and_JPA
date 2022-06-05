@@ -11,6 +11,7 @@ import com.jpabook.jpashop.dto.OrderSearchFilter;
 import com.jpabook.jpashop.exception.ExceptionSupplierUtils;
 import com.jpabook.jpashop.repository.ItemRepository;
 import com.jpabook.jpashop.repository.MemberRepository;
+import com.jpabook.jpashop.repository.OrderItemRepository;
 import com.jpabook.jpashop.repository.OrderRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class OrderServiceImpl implements OrderService {
 	private final OrderRepository orderRepository;
+	private final OrderItemRepository orderItemRepository;
 	private final MemberRepository memberRepository;
 	private final ItemRepository itemRepository;
 	private final ExceptionSupplierUtils exceptions;
@@ -59,7 +61,8 @@ public class OrderServiceImpl implements OrderService {
 	}
 	
 	@Override
-	public List<Order> searchOrders(OrderSearchFilter filter) {
-		return orderRepository.searchOrders(filter);
+	public List<OrderItem> searchOrders(OrderSearchFilter filter) {
+//		return orderRepository.searchOrders(filter);
+		return orderItemRepository.findOrderList(filter);
 	}
 }

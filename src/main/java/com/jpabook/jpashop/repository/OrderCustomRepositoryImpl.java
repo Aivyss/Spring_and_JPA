@@ -9,33 +9,29 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
 import java.util.Optional;
-import javax.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 @SuppressWarnings("ToArrayCallWithZeroLengthArrayArgument")
-@Repository
+@Component
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class OrderCustomRepositoryImpl implements OrderCustomRepository {
 	
 	private final JPAQueryFactory queryFactory;
 	
 	@Override
-	public List<Order> searchOrders(OrderSearchFilter filter) {
+	public List<Order> searchOrdersV1(OrderSearchFilter filter) {
 		QOrder order = QOrder.order;
 		QMember member = QMember.member;
-		final String memberName = filter.getMemberName();
+		String memberName = Optional.ofNullable(filter.getMemberName()).orElse("");
 		final OrderStatus orderStatus = filter.getOrderStatus();
-		BooleanExpression whereCondition = member.name.like(
-			"%" + Optional.ofNullable(memberName).orElse("") + "%");
-		
-		if (orderStatus != null) {
-			whereCondition = whereCondition.and(order.status.eq(orderStatus));
-		}
-		
+		final BooleanExpression whereCondition = orderStatus == null ? order.eq(order) : order.status.eq(orderStatus);
 		
 		return queryFactory.selectFrom(order)
-			.innerJoin(order.member, member).fetchJoin()
-			.where(whereCondition).fetch();
+			.innerJoin(order.member, member).on(member.name.like("%" + memberName + "%"))
+			.where(whereCondition)
+			.fetch();
 	}
 }

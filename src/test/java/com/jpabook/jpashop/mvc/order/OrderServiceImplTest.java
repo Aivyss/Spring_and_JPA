@@ -10,6 +10,7 @@ import com.jpabook.jpashop.domain.delivery.DeliveryStatus;
 import com.jpabook.jpashop.domain.item.impl.Book;
 import com.jpabook.jpashop.domain.member.Member;
 import com.jpabook.jpashop.domain.order.Order;
+import com.jpabook.jpashop.domain.order.OrderItem;
 import com.jpabook.jpashop.domain.order.OrderStatus;
 import com.jpabook.jpashop.dto.OrderSearchFilter;
 import com.jpabook.jpashop.exception.CommonError;
@@ -173,9 +174,9 @@ public class OrderServiceImplTest {
 		
 		// * when, then
 		filters.forEach(filter -> {
-			final List<Order> actualOrders = orderService.searchOrders(filter);
-			actualOrders.forEach(actualOrder -> {
-				final boolean contains = orders.contains(actualOrder);
+			final List<OrderItem> actualOrderItems = orderService.searchOrders(filter);
+			actualOrderItems.forEach(actualOrderItem -> {
+				final boolean contains = orders.contains(actualOrderItem.getOrder());
 				assertThat(contains).isTrue();
 			});
 		});

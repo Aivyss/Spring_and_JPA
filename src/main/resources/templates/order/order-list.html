@@ -47,17 +47,17 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="item : ${orders}">
-                    <td th:text="${item.id}"></td>
-                    <td th:text="${item.member.name}"></td>
-                    <td th:text="${item.orderItems[0].item.name}"></td>
-                    <td th:text="${item.orderItems[0].orderPrice}"></td>
-                    <td th:text="${item.orderItems[0].count}"></td>
-                    <td th:text="${item.status}"></td>
-                    <td th:text="${item.orderDate}"></td>
+                <tr th:each="order : ${orders}">
+                    <td th:text="${order.orderId}"></td>
+                    <td th:text="${order.memberName}"></td>
+                    <td th:text="${order.itemName}"></td>
+                    <td th:text="${order.orderPrice}"></td>
+                    <td th:text="${order.count}"></td>
+                    <td th:text="${order.orderStatus}"></td>
+                    <td th:text="${order.orderDate}"></td>
                     <td>
-                        <a th:if="${item.status.name() == 'ORDER'}" href="#"
-                           th:href="'javascript:cancel('+${item.id}+')'"
+                        <a th:if="${order.orderStatus == 'ORDER'}" href="#"
+                           th:href="'javascript:cancel('+${order.orderId}+')'"
                            class="btn btn-danger">CANCEL</a>
                     </td>
                 </tr>

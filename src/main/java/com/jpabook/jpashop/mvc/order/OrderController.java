@@ -3,10 +3,11 @@ package com.jpabook.jpashop.mvc.order;
 import com.jpabook.jpashop.domain.item.Item;
 import com.jpabook.jpashop.domain.item.impl.Book;
 import com.jpabook.jpashop.domain.member.Member;
-import com.jpabook.jpashop.domain.order.Order;
+import com.jpabook.jpashop.domain.order.OrderItem;
 import com.jpabook.jpashop.dto.BookForm;
 import com.jpabook.jpashop.dto.MemberForm;
 import com.jpabook.jpashop.dto.OrderForm;
+import com.jpabook.jpashop.dto.OrderListForm;
 import com.jpabook.jpashop.dto.OrderSearchFilter;
 import com.jpabook.jpashop.i18n.MessageService;
 import com.jpabook.jpashop.mvc.item.ItemService;
@@ -15,6 +16,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import java.lang.reflect.Field;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
@@ -112,7 +114,10 @@ public class OrderController {
 		tags = {"render"}
 	)
 	public String viewOrderList(@ModelAttribute("orderSearch") OrderSearchFilter orderSearch, Model model) {
-		final List<Order> orders = orderService.searchOrders(orderSearch);
+		final List<OrderItem> orderResults = orderService.searchOrders(orderSearch);
+		final List<OrderListForm> orders = orderResults.stream()
+			.map(order -> OrderListForm.from(order)).collect(Collectors.toList());
+		
 		model.addAttribute("orders", orders);
 		return "order/order-list";
 	}
