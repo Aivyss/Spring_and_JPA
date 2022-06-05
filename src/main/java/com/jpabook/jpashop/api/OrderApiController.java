@@ -7,6 +7,7 @@ import com.jpabook.jpashop.dto.OrderSearchFilter;
 import com.jpabook.jpashop.dto.api.common.DtoWrapper;
 import com.jpabook.jpashop.repository.OrderItemRepository;
 import com.jpabook.jpashop.repository.OrderRepository;
+import com.jpabook.jpashop.repository.law.OrderItemLawQueryRepository;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -25,8 +26,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 public class OrderApiController {
-	private final OrderRepository orderRepository; // JPA 성능최적화 연습을 위해 직접 임포트
+	// JPA 성능최적화 연습을 위해 직접 임포트
+	private final OrderRepository orderRepository;
 	private final OrderItemRepository orderItemRepository;
+	private final OrderItemLawQueryRepository orderItemLawQueryRepository;
 	
 	/**
 	 * delivery는 OneToOne이므로 LAZY가 동작하지 않고 강제로 EAGER로 작동함
@@ -64,7 +67,7 @@ public class OrderApiController {
 	 */
 	@GetMapping("/api/v3/orders")
 	public DtoWrapper<List<OrderListForm>> orderV3() {
-		final List<OrderListForm> dtos  = orderItemRepository.findOrderListV3(new OrderSearchFilter());
+		final List<OrderListForm> dtos  = orderItemLawQueryRepository.findOrderListV3(new OrderSearchFilter());
 		
 		return new DtoWrapper<>(dtos);
 	}

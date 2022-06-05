@@ -7,11 +7,4 @@ import java.util.List;
 
 public interface OrderItemCustomRepository {
 	List<OrderItem> findOrderList(OrderSearchFilter filter);
-	
-	/**
-	 * 곧바로 dto로 조회하는 방법. queryDSL Projection은 알고 있으므로 순수 JPQL을 이용
-	 * @param filter 조회필터
-	 * @return dtos
-	 */
-	List<OrderListForm> findOrderListV3(OrderSearchFilter filter);
 }
